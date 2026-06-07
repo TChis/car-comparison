@@ -6,766 +6,222 @@
 <title>Car Comparison Tool</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f7f6f3;
-  --bg-card: #ffffff;
-  --bg-secondary: #f0efe9;
-  --bg-tertiary: #e8e6de;
-  --border: #e0ddd4;
-  --border-light: #eceae2;
-  --text: #1a1916;
-  --text-secondary: #6b6860;
-  --text-muted: #9b9890;
-  --green: #1a7a5e;
-  --green-bg: #e6f4ef;
-  --amber: #a05c00;
-  --amber-bg: #fdf3e3;
-  --red: #b83232;
-  --red-bg: #fceaea;
-  --blue: #1a5c8a;
-  --blue-bg: #e6f0f8;
-  --purple: #5c3d8a;
-  --purple-bg: #f0eaf8;
-  --accent: #1a7a5e;
-  --accent-hover: #15664e;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-  --shadow: 0 2px 8px rgba(0,0,0,0.09);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
-  --radius: 10px;
-  --radius-sm: 6px;
-  --radius-lg: 16px;
-  --font: 'DM Sans', sans-serif;
-  --mono: 'DM Mono', monospace;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{font-size:16px;-webkit-text-size-adjust:100%}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
-
-/* ---- Layout ---- */
-.app{max-width:1180px;margin:0 auto;padding:20px 16px 80px}
-
-/* ---- Header ---- */
-.header{margin-bottom:22px;padding-bottom:18px;border-bottom:1.5px solid var(--border)}
-.header h1{font-size:clamp(18px,4vw,26px);font-weight:600;letter-spacing:-0.4px;color:var(--text)}
-.header p{font-size:13px;color:var(--text-secondary);margin-top:3px}
-.meta-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.meta-tag{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;background:var(--bg-secondary);color:var(--text-secondary);border:1px solid var(--border)}
-
-/* ---- Tabs ---- */
-.tabs{display:flex;gap:3px;background:var(--bg-secondary);padding:4px;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:18px;flex-wrap:wrap}
-.tab-btn{flex:1;min-width:70px;padding:8px 12px;border:none;border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);font-weight:500;cursor:pointer;background:transparent;color:var(--text-secondary);transition:all .15s;white-space:nowrap;text-align:center}
-.tab-btn:hover{background:var(--bg-card);color:var(--text)}
-.tab-btn.active{background:var(--bg-card);color:var(--text);box-shadow:var(--shadow-sm)}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-
-/* ---- Filters ---- */
-.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
-.filter-label{font-size:12px;color:var(--text-muted);font-weight:500;margin-right:2px}
-.filter-btn{padding:5px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-family:var(--font);font-weight:500;cursor:pointer;background:var(--bg-card);color:var(--text-secondary);transition:all .15s}
-.filter-btn:hover{border-color:var(--accent);color:var(--accent)}
-.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
-
-/* ---- Table ---- */
-.hint{font-size:12px;color:var(--text-muted);margin-bottom:8px}
-.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-card);box-shadow:var(--shadow-sm);-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;font-size:12px;min-width:700px}
-thead th{background:var(--bg-secondary);font-weight:600;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary);text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
-thead th:hover{color:var(--text);background:var(--bg-tertiary)}
-thead th.sorted{color:var(--accent)}
-tbody tr{cursor:pointer;border-bottom:1px solid var(--border-light);transition:background .1s}
-tbody tr:last-child{border-bottom:none}
-tbody tr:hover{background:var(--bg-secondary)}
-tbody tr.section-hdr{cursor:default;background:var(--bg-secondary)}
-tbody tr.section-hdr:hover{background:var(--bg-secondary)}
-td{padding:9px 12px;vertical-align:middle}
-.section-hdr td{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:7px 12px;border-bottom:1px solid var(--border)}
-.car-name{font-weight:600;font-size:12px;display:block}
-.car-gen{font-size:10px;color:var(--text-muted);display:block;margin-top:1px}
-
-/* ---- Tags ---- */
-.tag{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:3px;vertical-align:middle}
-.tag-h{background:var(--green-bg);color:var(--green)}
-.tag-p{background:var(--blue-bg);color:var(--blue)}
-.tag-!{background:var(--red-bg);color:var(--red)}
-.tag-deal{background:var(--amber-bg);color:var(--amber)}
-.tag-new{background:var(--purple-bg);color:var(--purple)}
-
-/* ---- Colours ---- */
-.good{color:var(--green);font-weight:500}
-.mid{color:var(--amber);font-weight:500}
-.bad{color:var(--red);font-weight:500}
-.muted{color:var(--text-muted)}
-.stars{font-size:11px;letter-spacing:-1px}
-
-/* ---- Scoring ---- */
-.score-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:640px){.score-layout{grid-template-columns:1fr}}
-.panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm)}
-.panel h3{font-size:13px;font-weight:600;margin-bottom:14px;color:var(--text)}
-.w-row{margin-bottom:13px}
-.w-label{display:flex;justify-content:space-between;margin-bottom:5px}
-.w-name{font-size:12px;color:var(--text-secondary);font-weight:500}
-.w-val{font-size:12px;font-weight:700;color:var(--accent);font-family:var(--mono)}
-input[type=range]{width:100%;height:4px;-webkit-appearance:none;appearance:none;background:var(--bg-tertiary);border-radius:2px;outline:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer}
-input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer}
-.total-label{font-size:11px;color:var(--text-muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light)}
-.total-label.ok{color:var(--green);font-weight:500}
-.score-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border-light);cursor:pointer;transition:opacity .1s}
-.score-row:last-child{border-bottom:none}
-.score-row:hover{opacity:.8}
-.rank{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-.r1{background:#fde68a;color:#78350f}
-.r2{background:#e2e8f0;color:#334155}
-.r3{background:#fed7aa;color:#7c2d12}
-.rn{background:var(--bg-secondary);color:var(--text-muted)}
-.score-info{flex:1;min-width:0}
-.score-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.score-sub{font-size:10px;color:var(--text-muted)}
-.bar-track{flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;min-width:40px}
-.bar-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s ease}
-.score-num{font-size:14px;font-weight:700;font-family:var(--mono);color:var(--text);flex-shrink:0;width:34px;text-align:right}
-
-/* ---- Watchouts ---- */
-.wo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
-.wo-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
-.wo-head{font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.wo-gen-small{font-size:10px;font-weight:400;color:var(--text-muted)}
-.wo-row{display:flex;gap:7px;align-items:flex-start;margin-bottom:5px}
-.wo-icon{font-size:13px;flex-shrink:0;line-height:1.4}
-.wo-text{font-size:12px;color:var(--text-secondary);line-height:1.4}
-.wo-divider{height:1px;background:var(--border-light);margin:8px 0}
-
-/* ---- Dealer guide ---- */
-.dealer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.d-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;cursor:pointer;transition:all .15s}
-.d-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
-.d-card.d-good{border-color:var(--green)}
-.d-card.d-avoid{border-color:var(--red)}
-.d-name{font-size:13px;font-weight:600;margin-bottom:6px}
-.d-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;margin-bottom:6px}
-.d-badge.good{background:var(--green-bg);color:var(--green)}
-.d-badge.avoid{background:var(--red-bg);color:var(--red)}
-.d-price{font-size:11px;color:var(--text-muted);margin-bottom:8px}
-.d-text{font-size:12px;color:var(--text-secondary);line-height:1.4}
-
-/* ---- Note box ---- */
-.note{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--text-secondary);margin-top:14px;line-height:1.5}
-
-/* ---- Modal ---- */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;padding:20px;overflow-y:auto;justify-content:center;align-items:flex-start}
-.overlay.open{display:flex}
-.modal{background:var(--bg-card);border-radius:var(--radius-lg);padding:22px;width:100%;max-width:540px;margin:auto;box-shadow:var(--shadow-lg)}
-.modal-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:12px}
-.modal-title{font-size:17px;font-weight:600;color:var(--text);line-height:1.3}
-.modal-sub{font-size:12px;color:var(--text-muted);margin-top:3px}
-.modal-close{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;font-size:12px;font-family:var(--font);cursor:pointer;color:var(--text-secondary);flex-shrink:0;white-space:nowrap}
-.modal-close:hover{background:var(--bg-tertiary)}
-.modal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-@media(max-width:380px){.modal-grid{grid-template-columns:1fr 1fr}}
-.mf-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);display:block;margin-bottom:2px}
-.mf-val{font-size:13px;font-weight:500;color:var(--text)}
-.issues-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:6px}
-.issues-box{background:var(--bg-secondary);border-radius:var(--radius-sm);padding:11px 13px;font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px;border-left:3px solid var(--accent)}
-
-@media(max-width:480px){
-  .app{padding:14px 12px 80px}
-  .tab-btn{font-size:12px;padding:7px 8px}
-  td,thead th{padding:8px 9px}
-  .modal{padding:16px}
-  .modal-title{font-size:15px}
-}
+:root{--bg:#f7f6f3;--bg-card:#fff;--bg-2:#f0efe9;--bg-3:#e8e6de;--border:#e0ddd4;--border-l:#eceae2;--text:#1a1916;--text-2:#6b6860;--text-m:#9b9890;--green:#1a7a5e;--green-bg:#e6f4ef;--amber:#a05c00;--amber-bg:#fdf3e3;--red:#b83232;--red-bg:#fceaea;--blue:#1a5c8a;--blue-bg:#e6f0f8;--teal:#0e6b72;--teal-bg:#e0f4f5;--purple:#5c3d8a;--purple-bg:#f0eaf8;--accent:#1a7a5e;--accent-h:#15664e;--sh:0 1px 3px rgba(0,0,0,.06);--sh2:0 2px 8px rgba(0,0,0,.09);--sh3:0 8px 32px rgba(0,0,0,.14);--r:10px;--rs:6px;--rl:16px;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}html{font-size:16px;-webkit-text-size-adjust:100%}body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+.app{max-width:1200px;margin:0 auto;padding:20px 16px 80px}
+.hdr{margin-bottom:22px;padding-bottom:18px;border-bottom:1.5px solid var(--border)}.hdr h1{font-size:clamp(18px,4vw,26px);font-weight:600;letter-spacing:-.4px}.hdr p{font-size:13px;color:var(--text-2);margin-top:3px}.meta-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.mtag{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;background:var(--bg-2);color:var(--text-2);border:1px solid var(--border)}
+.tabs{display:flex;gap:3px;background:var(--bg-2);padding:4px;border-radius:var(--r);border:1px solid var(--border);margin-bottom:18px;flex-wrap:wrap}.tbtn{flex:1;min-width:70px;padding:8px 12px;border:none;border-radius:var(--rs);font-size:13px;font-family:var(--font);font-weight:500;cursor:pointer;background:transparent;color:var(--text-2);transition:all .15s;white-space:nowrap;text-align:center}.tbtn:hover{background:var(--bg-card);color:var(--text)}.tbtn.active{background:var(--bg-card);color:var(--text);box-shadow:var(--sh)}.sec{display:none}.sec.active{display:block}
+.fbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}.flbl{font-size:12px;color:var(--text-m);font-weight:500;margin-right:2px}.fbtn{padding:5px 11px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-family:var(--font);font-weight:500;cursor:pointer;background:var(--bg-card);color:var(--text-2);transition:all .15s}.fbtn:hover{border-color:var(--accent);color:var(--accent)}.fbtn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.hint{font-size:12px;color:var(--text-m);margin-bottom:8px}.twrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);background:var(--bg-card);box-shadow:var(--sh);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:720px}thead th{background:var(--bg-2);font-weight:600;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-2);text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}thead th:hover{color:var(--text);background:var(--bg-3)}thead th.sorted{color:var(--accent)}tbody tr{cursor:pointer;border-bottom:1px solid var(--border-l);transition:background .1s}tbody tr:last-child{border-bottom:none}tbody tr:hover{background:var(--bg-2)}tbody tr.shdr{cursor:default;background:var(--bg-2)}tbody tr.shdr:hover{background:var(--bg-2)}td{padding:9px 12px;vertical-align:middle}.shdr td{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-m);padding:7px 12px;border-bottom:1px solid var(--border)}.cname{font-weight:600;font-size:12px;display:block}.cgen{font-size:10px;color:var(--text-m);display:block;margin-top:1px}
+.tag{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:3px;vertical-align:middle}.th{background:var(--green-bg);color:var(--green)}.tp{background:var(--blue-bg);color:var(--blue)}.td{background:var(--teal-bg);color:var(--teal)}.tx{background:var(--red-bg);color:var(--red)}.tdeal{background:var(--amber-bg);color:var(--amber)}.tcaution{background:var(--purple-bg);color:var(--purple)}
+.good{color:var(--green);font-weight:500}.mid{color:var(--amber);font-weight:500}.bad{color:var(--red);font-weight:500}.muted{color:var(--text-m)}.stars{font-size:11px;letter-spacing:-1px}
+.slayout{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:640px){.slayout{grid-template-columns:1fr}}.panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}.panel h3{font-size:13px;font-weight:600;margin-bottom:14px}.wr{margin-bottom:13px}.wl{display:flex;justify-content:space-between;margin-bottom:5px}.wn{font-size:12px;color:var(--text-2);font-weight:500}.wv{font-size:12px;font-weight:700;color:var(--accent);font-family:var(--mono)}
+input[type=range]{width:100%;height:4px;-webkit-appearance:none;appearance:none;background:var(--bg-3);border-radius:2px;outline:none;cursor:pointer}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer}input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid #fff;cursor:pointer}
+.tlbl{font-size:11px;color:var(--text-m);margin-top:10px;padding-top:10px;border-top:1px solid var(--border-l)}.tlbl.ok{color:var(--green);font-weight:500}
+.srow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border-l);cursor:pointer}.srow:last-child{border-bottom:none}.srow:hover{opacity:.8}.rank{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}.r1{background:#fde68a;color:#78350f}.r2{background:#e2e8f0;color:#334155}.r3{background:#fed7aa;color:#7c2d12}.rn{background:var(--bg-2);color:var(--text-m)}.sinfo{flex:1;min-width:0}.sname{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ssub{font-size:10px;color:var(--text-m)}.btrack{flex:1;height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden;min-width:40px}.bfill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s ease}.snum{font-size:14px;font-weight:700;font-family:var(--mono);color:var(--text);flex-shrink:0;width:34px;text-align:right}
+.wogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}.wocard{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}.wohead{font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}.wogen{font-size:10px;font-weight:400;color:var(--text-m)}.wor{display:flex;gap:7px;align-items:flex-start;margin-bottom:5px}.woi{font-size:13px;flex-shrink:0;line-height:1.4}.wot{font-size:12px;color:var(--text-2);line-height:1.4}.wodiv{height:1px;background:var(--border-l);margin:8px 0}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}.dcard{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .15s}.dcard:hover{box-shadow:var(--sh2);transform:translateY(-1px)}.dcard.d-good{border-color:var(--green)}.dcard.d-caution{border-color:var(--purple)}.dcard.d-avoid{border-color:var(--red)}.dname{font-size:13px;font-weight:600;margin-bottom:6px}.dbadge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;margin-bottom:6px}.dbadge.good{background:var(--green-bg);color:var(--green)}.dbadge.caution{background:var(--purple-bg);color:var(--purple)}.dbadge.avoid{background:var(--red-bg);color:var(--red)}.dprice{font-size:11px;color:var(--text-m);margin-bottom:6px}.dtext{font-size:12px;color:var(--text-2);line-height:1.4}
+.note{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:var(--text-2);margin-top:14px;line-height:1.5}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;padding:20px;overflow-y:auto;justify-content:center;align-items:flex-start}.overlay.open{display:flex}.modal{background:var(--bg-card);border-radius:var(--rl);padding:22px;width:100%;max-width:560px;margin:auto;box-shadow:var(--sh3)}.mhdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:12px}.mtitle{font-size:17px;font-weight:600;line-height:1.3}.msub{font-size:12px;color:var(--text-m);margin-top:3px}.mclose{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:6px 12px;font-size:12px;font-family:var(--font);cursor:pointer;color:var(--text-2);flex-shrink:0}.mclose:hover{background:var(--bg-3)}.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}@media(max-width:380px){.mgrid{grid-template-columns:1fr 1fr}}.mflbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-m);display:block;margin-bottom:2px}.mfval{font-size:13px;font-weight:500;color:var(--text)}.ilbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-m);margin-bottom:6px}.ibox{background:var(--bg-2);border-radius:var(--rs);padding:11px 13px;font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:12px;border-left:3px solid var(--accent)}
+@media(max-width:480px){.app{padding:14px 12px 80px}.tbtn{font-size:12px;padding:7px 8px}td,thead th{padding:8px 9px}.modal{padding:16px}.mtitle{font-size:15px}}
 </style>
 </head>
 <body>
 <div class="app">
-
-  <div class="header">
-    <h1>Car Comparison Tool</h1>
-    <p>Used car shortlist &middot; Automatic only &middot; Sub-&pound;11k &middot; UK market</p>
-    <div class="meta-row">
-      <span class="meta-tag">35 entries</span>
-      <span class="meta-tag">Hybrid &amp; petrol</span>
-      <span class="meta-tag">Cambridge area</span>
-      <span class="meta-tag">Tap any row for full detail</span>
-    </div>
+<div class="hdr">
+  <h1>Car Comparison Tool</h1>
+  <p>Full shortlist including diesel candidates &middot; Automatic only &middot; Sub-&pound;11k &middot; UK market</p>
+  <div class="meta-row">
+    <span class="mtag">70+ entries</span>
+    <span class="mtag">Hybrid, petrol &amp; diesel</span>
+    <span class="mtag">Cambridge area</span>
+    <span class="mtag">Tap any row for full detail</span>
+    <span class="mtag">H = hybrid &middot; P = petrol &middot; D = diesel</span>
   </div>
-
-  <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('compare',this)">Comparison</button>
-    <button class="tab-btn" onclick="showTab('score',this)">Scoring</button>
-    <button class="tab-btn" onclick="showTab('watchouts',this)">Watch-outs</button>
-    <button class="tab-btn" onclick="showTab('dealer',this)">Dealer guide</button>
-  </div>
-
-  <!-- COMPARISON -->
-  <div id="tab-compare" class="tab-panel active">
-    <div class="filter-bar">
-      <span class="filter-label">Filter:</span>
-      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
-      <button class="filter-btn" onclick="setFilter('shortlist',this)">Shortlist</button>
-      <button class="filter-btn" onclick="setFilter('hybrid',this)">Hybrid</button>
-      <button class="filter-btn" onclick="setFilter('petrol',this)">Petrol</button>
-      <button class="filter-btn" onclick="setFilter('crossover',this)">Crossover/SUV</button>
-      <button class="filter-btn" onclick="setFilter('supermini',this)">Supermini</button>
-      <button class="filter-btn" onclick="setFilter('sub5',this)">Sub-&pound;5k</button>
-    </div>
-    <p class="hint">Tap any row to see full detail including known issues, NVH, smartphone integration and more.</p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th onclick="sortBy('name')">Model</th>
-            <th onclick="sortBy('size')">Class</th>
-            <th onclick="sortBy('mpgLo')">MPG</th>
-            <th onclick="sortBy('ins')">Ins&nbsp;grp</th>
-            <th onclick="sortBy('rel')">Reliability</th>
-            <th onclick="sortBy('ncap')">NCAP</th>
-            <th onclick="sortBy('aeb')">AEB</th>
-            <th onclick="sortBy('cam')">Camera</th>
-            <th onclick="sortBy('boot')">Boot</th>
-            <th onclick="sortBy('dep')">Depreciation</th>
-            <th onclick="sortBy('sub5')">Sub-&pound;5k</th>
-          </tr>
-        </thead>
-        <tbody id="ctbody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- SCORING -->
-  <div id="tab-score" class="tab-panel">
-    <div class="score-layout">
-      <div class="panel">
-        <h3>Adjust weights</h3>
-        <div id="weight-controls"></div>
-        <p class="total-label" id="total-lbl"></p>
-      </div>
-      <div class="panel">
-        <h3>Rankings</h3>
-        <div class="filter-bar" id="score-filters" style="margin-bottom:12px">
-          <button class="filter-btn active" onclick="setSF('all',this)">All</button>
-          <button class="filter-btn" onclick="setSF('shortlist',this)">Shortlist</button>
-          <button class="filter-btn" onclick="setSF('hybrid',this)">Hybrid</button>
-        </div>
-        <div id="score-list"></div>
-      </div>
-    </div>
-    <p class="note">Scores exclude &ldquo;avoid&rdquo; cars. Adjust weights to reflect your priorities &mdash; push Reliability up for peace of mind, or Upfront price if budget is tight.</p>
-  </div>
-
-  <!-- WATCHOUTS -->
-  <div id="tab-watchouts" class="tab-panel">
-    <div class="wo-grid" id="wo-grid"></div>
-    <p class="note">Always: HPI check (~&pound;20 &middot; hpicheck.com), MOT history via DVLA (free), independent inspection via AA/RAC (~&pound;150) before purchase.</p>
-  </div>
-
-  <!-- DEALER GUIDE -->
-  <div id="tab-dealer" class="tab-panel">
-    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:14px">Cars you may encounter at a dealer that aren&rsquo;t on the main shortlist. Green border = grab if price is right. Red border = approach with caution.</p>
-    <div class="dealer-grid" id="dealer-grid"></div>
-    <p class="note">Check any car against the DVLA recall register before purchase. For Stellantis/PSA engines (Peugeot, Citro&euml;n, Vauxhall, DS) always ask specifically about timing chain service history.</p>
-  </div>
-
 </div>
-
-<!-- MODAL -->
-<div class="overlay" id="overlay" onclick="closeOutside(event)">
+<div class="tabs">
+  <button class="tbtn active" onclick="showTab('compare',this)">Comparison</button>
+  <button class="tbtn" onclick="showTab('score',this)">Scoring</button>
+  <button class="tbtn" onclick="showTab('watchouts',this)">Watch-outs</button>
+  <button class="tbtn" onclick="showTab('dealer',this)">Dealer guide</button>
+</div>
+<div id="tab-compare" class="sec active">
+  <div class="fbar">
+    <span class="flbl">Filter:</span>
+    <button class="fbtn active" onclick="setF('all',this)">All</button>
+    <button class="fbtn" onclick="setF('shortlist',this)">Shortlist</button>
+    <button class="fbtn" onclick="setF('hybrid',this)">Hybrid</button>
+    <button class="fbtn" onclick="setF('petrol',this)">Petrol</button>
+    <button class="fbtn" onclick="setF('diesel',this)">Diesel</button>
+    <button class="fbtn" onclick="setF('crossover',this)">Crossover/SUV</button>
+    <button class="fbtn" onclick="setF('supermini',this)">Supermini</button>
+    <button class="fbtn" onclick="setF('sub8',this)">Sub-&pound;8k</button>
+  </div>
+  <p class="hint">Tap any row for full detail. H=hybrid P=petrol D=diesel</p>
+  <div class="twrap">
+  <table>
+    <thead><tr>
+      <th onclick="sortBy('name')">Model</th>
+      <th onclick="sortBy('size')">Class</th>
+      <th onclick="sortBy('type')">Fuel</th>
+      <th onclick="sortBy('mpgLo')">MPG</th>
+      <th onclick="sortBy('ins')">Ins grp</th>
+      <th onclick="sortBy('rel')">Reliability</th>
+      <th onclick="sortBy('ncap')">NCAP</th>
+      <th onclick="sortBy('aeb')">AEB</th>
+      <th onclick="sortBy('cam')">Camera</th>
+      <th onclick="sortBy('boot')">Boot</th>
+      <th onclick="sortBy('sub8')">Sub-&pound;8k</th>
+    </tr></thead>
+    <tbody id="ctbody"></tbody>
+  </table>
+  </div>
+</div>
+<div id="tab-score" class="sec">
+  <div class="slayout">
+    <div class="panel">
+      <h3>Adjust weights</h3>
+      <div id="wcontrols"></div>
+      <p class="tlbl" id="tlbl"></p>
+    </div>
+    <div class="panel">
+      <h3>Rankings</h3>
+      <div class="fbar" id="sfilters" style="margin-bottom:12px">
+        <button class="fbtn active" onclick="setSF('all',this)">All</button>
+        <button class="fbtn" onclick="setSF('shortlist',this)">Shortlist</button>
+        <button class="fbtn" onclick="setSF('hybrid',this)">Hybrid</button>
+        <button class="fbtn" onclick="setSF('diesel',this)">Diesel</button>
+      </div>
+      <div id="slist"></div>
+    </div>
+  </div>
+  <p class="note">Scores exclude avoid cars. Caution cars included but marked. Adjust weights to reflect your priorities.</p>
+</div>
+<div id="tab-watchouts" class="sec">
+  <div class="wogrid" id="wogrid"></div>
+  <p class="note">Always: HPI check (~&pound;20 hpicheck.com), MOT history via DVLA (free), AA/RAC inspection (~&pound;150) before purchase.</p>
+</div>
+<div id="tab-dealer" class="sec">
+  <p style="font-size:13px;color:var(--text-2);margin-bottom:14px">Cars you may encounter at a dealer. Green=good deal if cheap. Purple=caution. Red=avoid.</p>
+  <div class="dgrid" id="dgrid"></div>
+  <p class="note">For PureTech engines ask for timing chain documentation. For all diesels ask about DPF service history. Always check DVLA recall register.</p>
+</div>
+</div>
+<div class="overlay" id="overlay" onclick="closeOut(event)">
   <div class="modal" id="modal"></div>
 </div>
-
 <script>
 // ================================================================
-// CAR DATA
-// To add a new car: copy one entry block, change the values, save.
-// status: 'shortlist' | 'good-deal' | 'avoid'
-// type:   'hybrid' | 'petrol'
-// size:   'supermini' | 'hatchback' | 'crossover' | 'suv'
+// CAR DATA — edit this section to add or update cars
+// status: 'shortlist' | 'good-deal' | 'caution' | 'avoid'
+// type:   'hybrid' | 'petrol' | 'diesel'
+// size:   'supermini'|'hatchback'|'crossover'|'suv'|'estate'|'mpv'
 // ================================================================
-const CARS = [
-  // ---- SHORTLIST: HYBRIDS ----
-  {name:'Toyota Yaris Hybrid',gen:'2017–2020',size:'supermini',type:'hybrid',status:'shortlist',sub5:false,
-   price:'£7–10k',mpgLo:50,mpgHi:58,ins:'8–12',rel:5,ncap:'5★ 2020',aeb:true,cam:'Design trim+',boot:286,
-   dep:'Low',depr:4,isofix:2,nhv:'Adequate — noticeable at 70mph',smartphone:'CarPlay/AA from 2019+',auto:'e-CVT (always auto)',
-   scores:{reliability:5,cost:4,safety:4,practicality:3,price:3},
-   good:['#1 Warrantywise reliability 2026','Toyota Safety Sense standard from 2017','Excellent parts & garage coverage'],
-   warn:['Reversing camera needs Design trim+','Tight rear seats for adults','Pre-2017 has fewer safety features']},
-
-  {name:'Toyota Yaris Hybrid',gen:'2020+',size:'supermini',type:'hybrid',status:'shortlist',sub5:false,
-   price:'£9–11k',mpgLo:52,mpgHi:60,ins:'9–13',rel:5,ncap:'5★ 2020 new protocol',aeb:true,cam:'Most trims',boot:286,
-   dep:'Very low — strong residuals',depr:5,isofix:2,nhv:'Improved — acceptable',smartphone:'CarPlay/AA standard',auto:'e-CVT (always auto)',
-   scores:{reliability:5,cost:3,safety:5,practicality:3,price:2},
-   good:['First car through new Euro NCAP — top score','AEB detects pedestrians mid-turn','Updated infotainment & safety'],
-   warn:['Stretches budget near £11k','Still tight rear space','Fewer available examples in area']},
-
-  {name:'Honda Jazz e:HEV',gen:'2020+',size:'supermini',type:'hybrid',status:'shortlist',sub5:false,
-   price:'£9–11k',mpgLo:50,mpgHi:57,ins:'11–15',rel:4,ncap:'5★ 2020',aeb:true,cam:'Most trims',boot:304,
-   dep:'Low-medium',depr:3,isofix:2,nhv:'Good — quiet and refined',smartphone:'CarPlay/AA standard',auto:'e-CVT (always auto)',
-   scores:{reliability:4,cost:3,safety:5,practicality:5,price:2},
-   good:['Best owner satisfaction (14th/50 Driver Power 2025)','Magic Seats — exceptional versatility','8.25" screen standard'],
-   warn:['Hard to find sub-£10k cleanly','Pre-2020 Jazz is a different car — not e:HEV','Ensure buying 2020+ specifically']},
-
-  {name:'Hyundai Ioniq Hybrid',gen:'2016–2022',size:'supermini',type:'hybrid',status:'shortlist',sub5:false,
-   price:'£6–9k',mpgLo:52,mpgHi:58,ins:'10–14',rel:4,ncap:'5★ 2016',aeb:false,cam:'Mid-trim std',boot:350,
-   dep:'Medium',depr:3,isofix:2,nhv:'Good — aerodynamic body helps',smartphone:'CarPlay/AA from 2018+',auto:'6-spd DCT (always auto)',
-   scores:{reliability:4,cost:5,safety:4,practicality:4,price:4},
-   good:['Best hybrid value for money in class','Efficient on mixed/motorway driving','Camera widely available mid-trim'],
-   warn:['AEB not standard on all early/lower trims — verify','2016–17 infotainment dated','DCT less smooth than Toyota CVT at low speed']},
-
-  {name:'Kia Niro Hybrid',gen:'2016–2022',size:'crossover',type:'hybrid',status:'shortlist',sub5:false,
-   price:'£7–9k',mpgLo:48,mpgHi:55,ins:'11–15',rel:4,ncap:'5★ 2016',aeb:false,cam:'Mid-trim+',boot:380,
-   dep:'Low-medium',depr:3,isofix:2,nhv:'Decent — slight road noise on rough surfaces',smartphone:'CarPlay/AA from 2018+',auto:'6-spd DCT (always auto)',
-   scores:{reliability:4,cost:4,safety:4,practicality:5,price:4},
-   good:['Largest boot of supermini hybrids','7-year warranty backstory on newer examples','Higher seating — closer to 3008 feel'],
-   warn:['Confirm HEV not PHEV or EV — same body shell','AEB not universal across trims','Slightly less frugal than Ioniq']},
-
-  {name:'Toyota C-HR Hybrid',gen:'2016–2023',size:'crossover',type:'hybrid',status:'shortlist',sub5:false,
-   price:'£8–11k',mpgLo:45,mpgHi:52,ins:'14–19',rel:5,ncap:'5★ 2016',aeb:true,cam:'Mid-trim+',boot:377,
-   dep:'Low — strong Toyota residuals',depr:4,isofix:2,nhv:'Good — well insulated for class',smartphone:'CarPlay/AA from 2019+',auto:'e-CVT (always auto)',
-   scores:{reliability:5,cost:4,safety:4,practicality:4,price:3},
-   good:['Toyota Yaris hybrid drivetrain in crossover body','AEB standard across most trims','Strong residual values'],
-   warn:['Boot compromised by sloping roofline (377L)','Rear visibility poor — camera especially important','Polarising styling']},
-
-  {name:'Toyota Prius Gen 3',gen:'2010–2015',size:'hatchback',type:'hybrid',status:'shortlist',sub5:true,
-   price:'£3–7k',mpgLo:48,mpgHi:55,ins:'13–17',rel:5,ncap:'5★ 2012',aeb:false,cam:'Higher trims only',boot:445,
-   dep:'Very low — already depreciated',depr:5,isofix:2,nhv:'Acceptable — wind noise at speed',smartphone:'None — too old',auto:'CVT (always auto)',
-   scores:{reliability:5,cost:5,safety:2,practicality:4,price:5},
-   good:['Most affordable hybrid on the list','Battery lasts 200k+ miles routinely','Largest boot of hybrid options'],
-   warn:['No AEB or lane assist','Dated infotainment — no smartphone integration','Older 2012 NCAP protocol']},
-
-  {name:'Toyota Prius Gen 4',gen:'2016–2022',size:'hatchback',type:'hybrid',status:'shortlist',sub5:false,
-   price:'£8–11k',mpgLo:52,mpgHi:60,ins:'14–18',rel:5,ncap:'5★ 2016',aeb:true,cam:'Mid-trim+',boot:457,
-   dep:'Low',depr:4,isofix:2,nhv:'Good — improved over Gen 3',smartphone:'CarPlay/AA from 2019',auto:'CVT (always auto)',
-   scores:{reliability:5,cost:4,safety:4,practicality:4,price:3},
-   good:['AEB standard across most trims','Improved interior and infotainment vs Gen 3','Proven 200k+ mile battery system'],
-   warn:['Polarising exterior styling','Tight sub-£10k — only early/higher-mileage','Less common than Yaris at this price']},
-
-  {name:'Renault Clio E-Tech',gen:'2020+',size:'supermini',type:'hybrid',status:'shortlist',sub5:false,
-   price:'£7–10k',mpgLo:50,mpgHi:57,ins:'11–16',rel:3,ncap:'5★ 2020',aeb:true,cam:'Most trims',boot:391,
-   dep:'Medium-high',depr:2,isofix:2,nhv:'Good — well refined for class',smartphone:'CarPlay/AA standard',auto:'Multimode auto (always auto)',
-   scores:{reliability:3,cost:4,safety:5,practicality:4,price:3},
-   good:['5-star Euro NCAP under new 2020 protocol','Camera widely available across trims','Stylish and well equipped'],
-   warn:['French reliability historically patchier than Japanese','Less independent garage experience with E-Tech hybrid','Newer platform — less long-term data available']},
-
-  // ---- SHORTLIST: PETROL ----
-  {name:'Honda Jazz petrol',gen:'2015–2020',size:'supermini',type:'petrol',status:'shortlist',sub5:true,
-   price:'£5–8k',mpgLo:44,mpgHi:50,ins:'10–14',rel:5,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:354,
-   dep:'Medium',depr:3,isofix:2,nhv:'Good for class',smartphone:'CarPlay/AA from 2018+',auto:'CVT (widely available — proven)',
-   scores:{reliability:5,cost:4,safety:3,practicality:5,price:4},
-   good:['Honda 1.3 i-VTEC — legendarily reliable','Magic Seats retained — very practical','Honda CVT auto widely available and proven'],
-   warn:['No AEB on this generation','NCAP 2015 protocol less stringent','44–50mpg — less frugal than hybrid equivalents']},
-
-  {name:'Nissan Micra K14',gen:'2017–2022',size:'supermini',type:'petrol',status:'shortlist',sub5:false,
-   price:'£6–9k',mpgLo:45,mpgHi:52,ins:'8–12',rel:4,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:300,
-   dep:'Medium',depr:3,isofix:2,nhv:'Adequate',smartphone:'CarPlay/AA from 2019+',auto:'CVT (available — verify listing)',
-   scores:{reliability:4,cost:4,safety:4,practicality:3,price:4},
-   good:['AEB standard across most trims','CVT auto smooth when specified','Often cheaper than equivalent Yaris'],
-   warn:['CVT auto variant less common — always verify listing','0.9T has occasional turbo seal reports on early cars','1.0 IG-T engine is simpler and preferable']},
-
-  {name:'Skoda Fabia DSG',gen:'2017–2022',size:'supermini',type:'petrol',status:'shortlist',sub5:true,
-   price:'£5–10k',mpgLo:53,mpgHi:60,ins:'8–13',rel:4,ncap:'5★ 2018',aeb:true,cam:'Mid-trim+',boot:330,
-   dep:'Medium',depr:3,isofix:2,nhv:'Good — solid build dampens road noise',smartphone:'CarPlay/AA from 2019+',auto:'7-spd DSG (110PS+ variants only)',
-   scores:{reliability:4,cost:5,safety:4,practicality:4,price:5},
-   good:['Best real-world petrol mpg on list (53–60mpg)','VW Group parts — cheap and widespread','Better interior quality than most rivals'],
-   warn:['DSG only available on 110PS+ — 95PS is manual only','Always verify gearbox type before purchase','DSG servicing costs slightly more than CVT']},
-
-  {name:'VW Polo DSG',gen:'2017–2021',size:'supermini',type:'petrol',status:'shortlist',sub5:false,
-   price:'£7–10k',mpgLo:48,mpgHi:55,ins:'10–15',rel:3,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:351,
-   dep:'Medium',depr:3,isofix:2,nhv:'Good — premium feel',smartphone:'CarPlay/AA from 2018+',auto:'7-spd DSG',
-   scores:{reliability:3,cost:3,safety:4,practicality:4,price:3},
-   good:['Premium interior feel for class','1.0 TSI very fuel efficient','Parts same as Fabia — cheap to maintain'],
-   warn:['VW badge adds premium vs equivalent Fabia','7-spd wet DSG had shudder reports on early 2017 examples','Less reliable overall than Japanese rivals']},
-
-  {name:'Toyota Yaris petrol',gen:'2017–2020',size:'supermini',type:'petrol',status:'shortlist',sub5:true,
-   price:'£5–8k',mpgLo:45,mpgHi:52,ins:'7–11',rel:5,ncap:'5★ 2020',aeb:true,cam:'Design trim+',boot:286,
-   dep:'Low',depr:4,isofix:2,nhv:'Adequate — slightly more engine noise than hybrid',smartphone:'CarPlay/AA from 2019+',auto:'Auto available but very rare',
-   scores:{reliability:5,cost:4,safety:4,practicality:3,price:4},
-   good:['Same platform reliability as hybrid — no battery concern','Toyota Safety Sense standard from 2017','Sub-£5k easily for earlier examples'],
-   warn:['Automatic very rare sub-£8k — expect premium or limited choice','Camera needs Design trim+','Loses 10–15mpg vs equivalent hybrid']},
-
-  // ---- SHORTLIST: CROSSOVERS ----
-  {name:'Suzuki Vitara',gen:'2015–2022',size:'crossover',type:'petrol',status:'shortlist',sub5:false,
-   price:'£7–10k',mpgLo:40,mpgHi:47,ins:'14–17',rel:4,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:375,
-   dep:'Medium',depr:3,isofix:2,nhv:'Adequate — some wind noise at speed',smartphone:'CarPlay/AA from 2019+',auto:'6-spd torque converter — smooth and reliable',
-   scores:{reliability:4,cost:4,safety:3,practicality:4,price:4},
-   good:['Naturally aspirated 1.6 — no turbo complexity','6-speed torque converter — no DCT concerns','Proper crossover seating height — closer to 3008 feel'],
-   warn:['No AEB on most examples in this budget','Lower mpg than turbocharged rivals','2015 NCAP less demanding protocol']},
-
-  {name:'Suzuki S-Cross',gen:'2016–2021',size:'crossover',type:'petrol',status:'shortlist',sub5:false,
-   price:'£7–10k',mpgLo:40,mpgHi:47,ins:'14–18',rel:4,ncap:'5★ 2016',aeb:false,cam:'Mid-trim+',boot:430,
-   dep:'Medium',depr:3,isofix:2,nhv:'Good — better than Vitara at motorway speed',smartphone:'CarPlay/AA from 2019+',auto:'6-spd torque converter — smooth and reliable',
-   scores:{reliability:4,cost:4,safety:3,practicality:4,price:4},
-   good:['Vitara sibling — same proven reliable drivetrain','430L boot — more practical than Vitara','More 3008-adjacent in overall size'],
-   warn:['No AEB on most budget examples','Lower mpg than turbo rivals','Less common than Vitara — fewer choices available']},
-
-  {name:'Honda HR-V',gen:'2015–2021',size:'crossover',type:'petrol',status:'shortlist',sub5:false,
-   price:'£8–11k',mpgLo:40,mpgHi:46,ins:'15–19',rel:5,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:470,
-   dep:'Low-medium',depr:3,isofix:2,nhv:'Good — better than Jazz at speed',smartphone:'CarPlay/AA from 2018+',auto:'Honda CVT (proven)',
-   scores:{reliability:5,cost:3,safety:3,practicality:5,price:3},
-   good:['Honda Jazz CVT reliability in a proper crossover body','470L boot — most practical petrol crossover on list','Higher seating position — closest petrol to 3008 feel'],
-   warn:['No AEB on this generation','2015 NCAP protocol less demanding','Tight sub-£10k for clean well-specced examples']},
-
-  {name:'Mazda CX-3',gen:'2015–2021',size:'crossover',type:'petrol',status:'shortlist',sub5:false,
-   price:'£7–10k',mpgLo:40,mpgHi:46,ins:'14–18',rel:5,ncap:'5★ 2015',aeb:true,cam:'Mid-trim+',boot:350,
-   dep:'Low',depr:4,isofix:2,nhv:'Excellent — best in class',smartphone:'CarPlay/AA from 2018+',auto:'6-spd torque converter — smooth and durable',
-   scores:{reliability:5,cost:3,safety:4,practicality:3,price:4},
-   good:['Toyota-adjacent reliability','Torque converter auto — no DCT concerns','Excellent build quality and motorway refinement'],
-   warn:['Smaller boot than other crossovers (350L)','Lower seating than a typical crossover','2015 NCAP protocol']},
-
-  {name:'Mazda CX-30',gen:'2019+',size:'crossover',type:'petrol',status:'shortlist',sub5:false,
-   price:'£9–12k',mpgLo:38,mpgHi:44,ins:'15–19',rel:5,ncap:'5★ 2019',aeb:true,cam:'Standard',boot:430,
-   dep:'Low',depr:4,isofix:2,nhv:'Excellent — one of best in class',smartphone:'CarPlay/AA standard',auto:'6-spd torque converter — smooth and durable',
-   scores:{reliability:5,cost:3,safety:5,practicality:4,price:2},
-   good:['Toyota-adjacent reliability on updated platform','Best motorway refinement in crossover class','5-star 2019 NCAP — more demanding protocol'],
-   warn:['MPG lower than hybrid alternatives','Tight sub-£10k — few clean examples','Lower seating than typical crossover']},
-
-  {name:'Nissan Juke Gen 2',gen:'2019+',size:'crossover',type:'petrol',status:'shortlist',sub5:false,
-   price:'£9–12k',mpgLo:40,mpgHi:47,ins:'16–20',rel:4,ncap:'5★ 2019',aeb:true,cam:'Most trims',boot:422,
-   dep:'Medium',depr:3,isofix:2,nhv:'Good — significant improvement on Gen 1',smartphone:'CarPlay/AA standard',auto:'DCT (more reliable than Gen 1)',
-   scores:{reliability:4,cost:3,safety:4,practicality:4,price:3},
-   good:['Major reliability improvement over Gen 1','422L boot vs 251L on Gen 1 — completely different car','AEB standard across range'],
-   warn:['Stretches sub-£11k budget — few clean examples','Avoid Gen 1 entirely — different car','DCT still less proven than torque converter']},
-
-  {name:'SEAT Arona DSG',gen:'2017–2022',size:'crossover',type:'petrol',status:'shortlist',sub5:false,
-   price:'£8–11k',mpgLo:42,mpgHi:50,ins:'14–18',rel:3,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:400,
-   dep:'Medium-high',depr:2,isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'7-spd DSG',
-   scores:{reliability:3,cost:3,safety:4,practicality:4,price:3},
-   good:['Proper small crossover — higher seating position','VW Group platform — cheap parts','AEB standard on most trims'],
-   warn:['SEAT badge depreciates quickly — check vs Fabia value','DSG servicing costs','Less reliable than Japanese rivals']},
-
-  {name:'Skoda Karoq DSG',gen:'2017–2022',size:'crossover',type:'petrol',status:'shortlist',sub5:false,
-   price:'£8–11k',mpgLo:42,mpgHi:50,ins:'14–19',rel:4,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:521,
-   dep:'Medium',depr:3,isofix:2,nhv:'Good — well insulated',smartphone:'CarPlay/AA from 2019+',auto:'7-spd DSG standard on most',
-   scores:{reliability:4,cost:3,safety:4,practicality:5,price:3},
-   good:['Best boot space on the entire list (521L)','DSG reliable on 1.5 TSI pairing','VW Group parts — cheap'],
-   warn:['1.5 TSI preferred over 1.0 for crossover weight','DSG servicing costs more than CVT','Less reliable than Japanese alternatives']},
-
-  {name:'Ford Kuga FHEV',gen:'2020+',size:'crossover',type:'hybrid',status:'shortlist',sub5:false,
-   price:'£9–12k',mpgLo:40,mpgHi:48,ins:'17–22',rel:3,ncap:'5★ 2019',aeb:true,cam:'Most trims',boot:456,
-   dep:'Medium-high',depr:2,isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'Auto (always)',
-   scores:{reliability:3,cost:3,safety:4,practicality:5,price:2},
-   good:['Best size match to Peugeot 3008 on this list','5-star 2019 NCAP','Practical 456L boot'],
-   warn:['FHEV hybrid system less proven than Toyota/Honda','Avoid pre-2020 Kuga — 1.5 EcoBoost had fire risk recall','Tight sub-£10k for clean examples']},
-
-  {name:'Nissan Qashqai',gen:'2014–2021',size:'crossover',type:'petrol',status:'shortlist',sub5:false,
-   price:'£6–10k',mpgLo:38,mpgHi:44,ins:'14–19',rel:3,ncap:'5★ 2014',aeb:false,cam:'Higher trims',boot:430,
-   dep:'Medium-high',depr:2,isofix:2,nhv:'Adequate — road noise present',smartphone:'CarPlay/AA from 2019+',auto:'CVT — mixed reliability reviews',
-   scores:{reliability:3,cost:3,safety:3,practicality:4,price:4},
-   good:['Cheapest parts of any crossover on list','Familiar crossover size — similar to 3008','Very wide availability'],
-   warn:['1.3 DIG-T engine has known reliability concerns','AEB not standard this generation','2014 NCAP — less demanding protocol']},
-
-  // ---- GOOD DEAL ----
-  {name:'Lexus CT 200h',gen:'2011–2017',size:'hatchback',type:'hybrid',status:'good-deal',sub5:true,
-   price:'£5–9k',mpgLo:48,mpgHi:55,ins:'17–22',rel:5,ncap:'5★ 2011',aeb:false,cam:'Higher trims',boot:278,
-   dep:'Very low — already depreciated',depr:5,isofix:2,nhv:'Excellent — Lexus refinement',smartphone:'None on most',auto:'CVT (always)',
-   scores:{reliability:5,cost:3,safety:3,practicality:3,price:4},
-   good:['Toyota Yaris hybrid drivetrain underneath','Premium Lexus build quality and NVH','If found cheap — exceptional reliability value'],
-   warn:['Very small boot (278L)','No AEB available','Dated infotainment — no CarPlay on most']},
-
-  {name:'Toyota RAV4 Hybrid',gen:'2019+',size:'suv',type:'hybrid',status:'good-deal',sub5:false,
-   price:'Usually £14–18k',mpgLo:40,mpgHi:48,ins:'19–24',rel:5,ncap:'5★ 2019',aeb:true,cam:'Standard',boot:580,
-   dep:'Very low',depr:5,isofix:3,nhv:'Good — well insulated',smartphone:'CarPlay/AA standard',auto:'e-CVT (always)',
-   scores:{reliability:5,cost:3,safety:5,practicality:5,price:1},
-   good:['Best hybrid SUV in reliability terms','580L boot — very practical','If found sub-£12k with history — exceptional buy'],
-   warn:['Over budget at typical prices','Higher insurance group','Higher service costs than supermini hybrids']},
-
-  {name:'Honda CR-V Hybrid',gen:'2018+',size:'suv',type:'hybrid',status:'good-deal',sub5:false,
-   price:'Usually £13–17k',mpgLo:40,mpgHi:47,ins:'20–25',rel:4,ncap:'5★ 2018',aeb:true,cam:'Standard',boot:497,
-   dep:'Low-medium',depr:3,isofix:3,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'e-CVT (always)',
-   scores:{reliability:4,cost:2,safety:5,practicality:5,price:1},
-   good:['Honda hybrid system proven and reliable','Spacious 497L boot','If found sub-£11k with history — strong buy'],
-   warn:['Over budget at typical prices','Higher insurance and running costs','Watch for high mileage at lower prices']},
-
-  {name:'Mazda CX-5',gen:'2017+',size:'suv',type:'petrol',status:'good-deal',sub5:false,
-   price:'Usually £11–15k',mpgLo:36,mpgHi:42,ins:'18–23',rel:5,ncap:'5★ 2017',aeb:true,cam:'Standard',boot:506,
-   dep:'Low',depr:4,isofix:2,nhv:'Excellent',smartphone:'CarPlay/AA standard',auto:'6-spd torque converter',
-   scores:{reliability:5,cost:2,safety:5,practicality:5,price:1},
-   good:['Toyota-adjacent reliability','Torque converter auto — no DCT concerns','If found sub-£11k with history — exceptional value'],
-   warn:['Usually over budget at typical prices','Lower mpg than hybrid alternatives','Higher insurance group']},
-
-  {name:'Hyundai Tucson Hybrid',gen:'2021+',size:'suv',type:'hybrid',status:'good-deal',sub5:false,
-   price:'Usually £15–20k',mpgLo:40,mpgHi:48,ins:'20–25',rel:4,ncap:'5★ 2020',aeb:true,cam:'Standard',boot:616,
-   dep:'Low-medium',depr:3,isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'Auto (always)',
-   scores:{reliability:4,cost:2,safety:5,practicality:5,price:1},
-   good:['Direct Peugeot 3008 size competitor','5-star under new 2020 NCAP protocol','If early example appears sub-£12k — worth serious consideration'],
-   warn:['Over budget for almost all examples','Higher insurance group 20+','Higher running and service costs']},
-
-  // ---- AVOID ----
-  {name:'Peugeot 3008 / 2008',gen:'2016+',size:'crossover',type:'petrol',status:'avoid',sub5:false,
-   price:'£6–11k',mpgLo:38,mpgHi:44,ins:'17–22',rel:2,ncap:'5★ 2016',aeb:true,cam:'Standard',boot:520,
-   dep:'High',depr:1,isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'EAT auto (torque converter)',
-   scores:{reliability:2,cost:2,safety:4,practicality:5,price:3},
-   good:['Familiar — you already know this car','Good safety tech on 2019+ examples','Practical 520L boot'],
-   warn:['1.2 PureTech timing chain issue — widespread documented problem','Repair cost £800–1,500+ if chain fails','Only consider with documented and dated chain inspection history']},
-
-  {name:'Vauxhall Crossland',gen:'2017–2022',size:'crossover',type:'petrol',status:'avoid',sub5:false,
-   price:'£5–10k',mpgLo:40,mpgHi:48,ins:'13–18',rel:2,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:410,
-   dep:'High',depr:1,isofix:2,nhv:'Adequate',smartphone:'CarPlay/AA from 2019+',auto:'8-spd torque converter (gearbox fine)',
-   scores:{reliability:2,cost:3,safety:4,practicality:4,price:4},
-   good:['8-speed torque converter auto is smooth','Competitive pricing for the spec','Practical boot and crossover stance'],
-   warn:['Same PSA PureTech 1.2 engine as Peugeot — same timing chain risk','Only consider 2019+ with documented chain inspection history','Avoid any example without specific chain service records']},
-
-  {name:'Renault Kadjar',gen:'2015–2022',size:'crossover',type:'petrol',status:'avoid',sub5:false,
-   price:'£6–10k',mpgLo:38,mpgHi:44,ins:'15–20',rel:2,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:472,
-   dep:'High',depr:1,isofix:2,nhv:'Adequate — noisy at motorway speed',smartphone:'Partial on later trims',auto:'CVT — mixed reliability',
-   scores:{reliability:2,cost:2,safety:3,practicality:4,price:3},
-   good:['Practical 472L boot','Reasonable purchase price'],
-   warn:['CVT auto has mixed reliability reviews','Overall reliability patchier than Qashqai despite same platform','AEB not standard — must verify on listing']},
-
-  {name:'Ford Focus / Fiesta auto',gen:'2015–2019',size:'hatchback',type:'petrol',status:'avoid',sub5:false,
-   price:'£5–9k',mpgLo:38,mpgHi:44,ins:'15–20',rel:2,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:375,
-   dep:'High',depr:1,isofix:2,nhv:'Adequate',smartphone:'Partial',auto:'Powershift DCT — documented issues',
-   scores:{reliability:2,cost:2,safety:3,practicality:4,price:3},
-   good:['Cheapest parts of any car on the list','Manual versions are perfectly fine cars'],
-   warn:['Powershift DCT automatic has documented juddering and clutch wear issues','Avoid automatic variant specifically','Manual Focus or Fiesta is a different matter but irrelevant here']},
-
-  {name:'Mitsubishi Outlander PHEV',gen:'2014–2021',size:'suv',type:'hybrid',status:'avoid',sub5:false,
-   price:'£5–10k',mpgLo:25,mpgHi:35,ins:'22–27',rel:2,ncap:'5★ 2013',aeb:false,cam:'Standard',boot:463,
-   dep:'Very high',depr:1,isofix:3,nhv:'Adequate',smartphone:'Partial on later',auto:'Auto (always)',
-   scores:{reliability:2,cost:1,safety:2,practicality:4,price:3},
-   good:['Large practical SUV with good ground clearance'],
-   warn:['Battery degradation severe on budget examples — often only 10–15 miles real EV range','Heavy without working battery — poor fuel economy on petrol alone','Mitsubishi parts network thinning after European market withdrawal']},
+const CARS=[
+// SHORTLIST HYBRIDS
+{name:'Toyota Yaris Hybrid',gen:'2017–2020',size:'supermini',type:'hybrid',status:'shortlist',sub8:false,price:'£7–10k',mpgLo:50,mpgHi:58,ins:'8–12',rel:5,ncap:'5★ 2020',aeb:true,cam:'Design trim+',boot:286,dep:'Low',isofix:2,nhv:'Adequate',smartphone:'CarPlay/AA from 2019+',auto:'e-CVT (always auto)',scores:{reliability:5,cost:4,safety:4,practicality:3,price:3},good:['#1 Warrantywise reliability 2026','Toyota Safety Sense AEB standard from 2017','Excellent parts and garage coverage'],warn:['Camera needs Design trim+ — verify on listing','Tight rear seats for adults','Pre-2017 has fewer safety features']},
+{name:'Toyota Yaris Hybrid',gen:'2020+',size:'supermini',type:'hybrid',status:'shortlist',sub8:false,price:'£9–11k',mpgLo:52,mpgHi:60,ins:'9–13',rel:5,ncap:'5★ 2020 new protocol',aeb:true,cam:'Most trims',boot:286,dep:'Very low',isofix:2,nhv:'Improved — acceptable',smartphone:'CarPlay/AA standard',auto:'e-CVT (always auto)',scores:{reliability:5,cost:3,safety:5,practicality:3,price:2},good:['First car through new Euro NCAP — top score','AEB detects pedestrians mid-turn','Updated infotainment'],warn:['Stretches budget near £11k','Still tight rear space','Fewer available examples in area']},
+{name:'Honda Jazz e:HEV',gen:'2020+',size:'supermini',type:'hybrid',status:'shortlist',sub8:false,price:'£9–11k',mpgLo:50,mpgHi:57,ins:'11–15',rel:4,ncap:'5★ 2020',aeb:true,cam:'Most trims',boot:304,dep:'Low-medium',isofix:2,nhv:'Good — quiet and refined',smartphone:'CarPlay/AA standard',auto:'e-CVT (always auto)',scores:{reliability:4,cost:3,safety:5,practicality:5,price:2},good:['Best owner satisfaction 14th/50 Driver Power 2025','Magic Seats — exceptional versatility','8.25 inch screen standard'],warn:['Hard to find sub-£10k cleanly','Pre-2020 Jazz is a different car','Ensure buying 2020+ specifically']},
+{name:'Hyundai Ioniq Hybrid',gen:'2016–2022',size:'supermini',type:'hybrid',status:'shortlist',sub8:false,price:'£6–9k',mpgLo:52,mpgHi:58,ins:'10–14',rel:4,ncap:'5★ 2016',aeb:false,cam:'Mid-trim std',boot:350,dep:'Medium',isofix:2,nhv:'Good — aerodynamic body helps',smartphone:'CarPlay/AA from 2018+',auto:'6-spd DCT (always auto)',scores:{reliability:4,cost:5,safety:4,practicality:4,price:4},good:['Best hybrid value for money','Efficient on mixed and motorway driving','Camera widely available mid-trim'],warn:['AEB not standard on all early/lower trims — verify','2016–17 infotainment dated','DCT less smooth than Toyota CVT at low speed']},
+{name:'Kia Niro Hybrid',gen:'2016–2022',size:'crossover',type:'hybrid',status:'shortlist',sub8:false,price:'£7–9k',mpgLo:48,mpgHi:55,ins:'11–15',rel:4,ncap:'5★ 2016',aeb:false,cam:'Mid-trim+',boot:380,dep:'Low-medium',isofix:2,nhv:'Decent',smartphone:'CarPlay/AA from 2018+',auto:'6-spd DCT (always auto)',scores:{reliability:4,cost:4,safety:4,practicality:5,price:4},good:['Higher seating — closer to 3008 feel','7-year warranty backstory on newer examples','Largest boot of supermini hybrids'],warn:['Confirm HEV not PHEV or EV — same body shell','AEB not universal across trims','Slightly less frugal than Ioniq']},
+{name:'Toyota C-HR Hybrid',gen:'2016–2023',size:'crossover',type:'hybrid',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:45,mpgHi:52,ins:'14–19',rel:5,ncap:'5★ 2016',aeb:true,cam:'Mid-trim+',boot:377,dep:'Low',isofix:2,nhv:'Good — well insulated',smartphone:'CarPlay/AA from 2019+',auto:'e-CVT (always auto)',scores:{reliability:5,cost:4,safety:4,practicality:4,price:3},good:['Toyota Yaris hybrid drivetrain in crossover body','AEB standard across most trims','Strong residual values'],warn:['Coupe roofline reduces rear visibility — camera especially important','Boot compromised by styling (377L)','Polarising exterior']},
+{name:'Hyundai Kona Hybrid',gen:'2019–2023',size:'crossover',type:'hybrid',status:'shortlist',sub8:false,price:'£9–11k',mpgLo:50,mpgHi:55,ins:'14–18',rel:4,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:374,dep:'Low-medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'6-spd DCT (always auto)',scores:{reliability:4,cost:4,safety:4,practicality:4,price:3},good:['Proper crossover seating — upright roofline','Good visibility — no Arkana-style issues','AEB standard'],warn:['Sub-£11k examples are earlier/higher mileage','Verify DCT service history','1.6 GDi hybrid — less smooth than Toyota e-CVT']},
+{name:'Renault Clio E-Tech',gen:'2020+',size:'supermini',type:'hybrid',status:'shortlist',sub8:false,price:'£7–10k',mpgLo:50,mpgHi:57,ins:'11–16',rel:3,ncap:'5★ 2020',aeb:true,cam:'Most trims',boot:391,dep:'Medium-high',isofix:2,nhv:'Good — well refined',smartphone:'CarPlay/AA standard',auto:'Multimode auto (always)',scores:{reliability:3,cost:4,safety:5,practicality:4,price:3},good:['5-star Euro NCAP under new 2020 protocol','Camera widely available','Stylish and well equipped'],warn:['French reliability historically patchier than Japanese','Less independent garage experience with E-Tech','Newer — less long-term data']},
+{name:'Toyota Auris 1.8 Hybrid',gen:'2015–2019 hatch',size:'hatchback',type:'hybrid',status:'shortlist',sub8:true,price:'£7–10k',mpgLo:50,mpgHi:55,ins:'13–17',rel:5,ncap:'5★ 2013',aeb:false,cam:'Higher trims',boot:360,dep:'Low-medium',isofix:2,nhv:'Good',smartphone:'Partial — check listing',auto:'CVT (always auto)',scores:{reliability:5,cost:4,safety:3,practicality:4,price:4},good:['Toyota proven 1.8 hybrid — same as Prius','Safety Sense AEB on post-facelift examples — verify','Underrated and underpriced'],warn:['AEB only on examples with Safety Sense badge — always verify','NCAP 2013 protocol on earlier examples','Infotainment dated on pre-2018 cars']},
+{name:'Toyota Auris Touring Sports Hybrid',gen:'2015–2019 estate',size:'estate',type:'hybrid',status:'shortlist',sub8:true,price:'£7–10k',mpgLo:50,mpgHi:55,ins:'13–17',rel:5,ncap:'5★ 2013',aeb:false,cam:'Higher trims',boot:530,dep:'Low-medium',isofix:2,nhv:'Good',smartphone:'Partial — check listing',auto:'CVT (always auto)',scores:{reliability:5,cost:4,safety:3,practicality:5,price:4},good:['530L estate boot — matches Peugeot 3008 practicality','Same proven Toyota hybrid drivetrain','Underrated — often cheaper than equivalent Prius'],warn:['AEB only where Safety Sense is explicitly listed — verify','NCAP 2013 protocol','Infotainment dated on pre-2018 examples']},
+{name:'Toyota Prius Gen 3',gen:'2010–2015',size:'hatchback',type:'hybrid',status:'shortlist',sub8:true,price:'£3–7k',mpgLo:48,mpgHi:55,ins:'13–17',rel:5,ncap:'5★ 2012',aeb:false,cam:'Higher trims only',boot:445,dep:'Very low — depreciated',isofix:2,nhv:'Acceptable',smartphone:'None — too old',auto:'CVT (always auto)',scores:{reliability:5,cost:5,safety:2,practicality:4,price:5},good:['Most affordable hybrid option','Battery lasts 200k+ miles routinely','Largest boot of hybrid hatchbacks'],warn:['No AEB or lane assist','No smartphone integration — too old','Older 2012 NCAP protocol']},
+{name:'Toyota Prius Gen 4',gen:'2016–2022',size:'hatchback',type:'hybrid',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:52,mpgHi:60,ins:'14–18',rel:5,ncap:'5★ 2016',aeb:true,cam:'Mid-trim+',boot:457,dep:'Low',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2019',auto:'CVT (always auto)',scores:{reliability:5,cost:4,safety:4,practicality:4,price:3},good:['AEB standard across most trims','Improved interior vs Gen 3','Proven 200k+ mile battery'],warn:['Polarising styling','Tight sub-£10k for clean examples','High mileage examples appearing — verify history']},
+{name:'Ford Kuga FHEV',gen:'2020+',size:'crossover',type:'hybrid',status:'shortlist',sub8:false,price:'£9–12k',mpgLo:40,mpgHi:48,ins:'17–22',rel:3,ncap:'5★ 2019',aeb:true,cam:'Most trims',boot:456,dep:'Medium-high',isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'Auto (always)',scores:{reliability:3,cost:3,safety:4,practicality:5,price:2},good:['Best size match to Peugeot 3008 on hybrid list','5-star 2019 NCAP','456L boot'],warn:['FHEV system less proven than Toyota/Honda','Avoid pre-2020 — fire risk recall','Tight sub-£10k for clean examples']},
+// SHORTLIST PETROL
+{name:'Honda Jazz petrol',gen:'2015–2020',size:'supermini',type:'petrol',status:'shortlist',sub8:true,price:'£5–8k',mpgLo:44,mpgHi:50,ins:'10–14',rel:5,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:354,dep:'Medium',isofix:2,nhv:'Good for class',smartphone:'CarPlay/AA from 2018+',auto:'CVT (proven)',scores:{reliability:5,cost:4,safety:3,practicality:5,price:4},good:['Honda 1.3 i-VTEC — legendarily reliable','Magic Seats retained','CVT auto widely available and proven'],warn:['No AEB on this generation','NCAP 2015 protocol','44–50mpg — less frugal than hybrids']},
+{name:'Honda HR-V',gen:'2015–2021',size:'crossover',type:'petrol',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:40,mpgHi:46,ins:'15–19',rel:5,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:470,dep:'Low-medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'Honda CVT (proven)',scores:{reliability:5,cost:3,safety:3,practicality:5,price:3},good:['Honda Jazz CVT reliability in a crossover body','470L boot','Higher seating — closer to 3008 feel'],warn:['No AEB on this generation','NCAP 2015 protocol','Tight sub-£10k for clean examples']},
+{name:'Nissan Micra K14',gen:'2017–2022',size:'supermini',type:'petrol',status:'shortlist',sub8:false,price:'£6–9k',mpgLo:45,mpgHi:52,ins:'8–12',rel:4,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:300,dep:'Medium',isofix:2,nhv:'Adequate',smartphone:'CarPlay/AA from 2019+',auto:'CVT (available — verify)',scores:{reliability:4,cost:4,safety:4,practicality:3,price:4},good:['AEB standard across most trims','CVT auto smooth when specified','Often cheaper than equivalent Yaris'],warn:['CVT auto variant less common — always verify','0.9T has occasional turbo seal reports','1.0 IG-T engine is simpler and preferable']},
+{name:'Skoda Fabia DSG',gen:'2017–2021',size:'supermini',type:'petrol',status:'shortlist',sub8:false,price:'£5–10k',mpgLo:53,mpgHi:60,ins:'8–13',rel:4,ncap:'5★ 2018',aeb:true,cam:'SE L trim+',boot:330,dep:'Medium',isofix:2,nhv:'Good — solid build',smartphone:'CarPlay/AA from 2019+',auto:'7-spd DSG (110PS+ only)',scores:{reliability:4,cost:5,safety:4,practicality:4,price:5},good:['Best real-world petrol mpg (53–60mpg)','VW Group parts — cheap and widespread','AEB standard post-2018 facelift'],warn:['DSG only on 110PS+ — 95PS is manual only','Always verify gearbox on test drive','SE L trim for camera — base SE may not include it']},
+{name:'Skoda Fabia Estate',gen:'2022+',size:'estate',type:'petrol',status:'shortlist',sub8:true,price:'£7–10k',mpgLo:50,mpgHi:57,ins:'9–14',rel:4,ncap:'5★ 2022',aeb:true,cam:'SE trim — verify',boot:530,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'7-spd DSG (verify on test drive)',scores:{reliability:4,cost:4,safety:5,practicality:5,price:4},good:['Most modern car on list — 2022 NCAP protocol','9.2 inch touchscreen standard','530L estate boot matches 3008 practicality'],warn:['High mileage on budget examples (80k+ on 3-year-old cars)','95PS DSG listing mismatch — verify smooth auto on test drive','Wetbelt service due around 100k miles — check history']},
+{name:'Suzuki Vitara Auto',gen:'2015–2022',size:'crossover',type:'petrol',status:'shortlist',sub8:false,price:'£7–10k',mpgLo:40,mpgHi:47,ins:'14–17',rel:4,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:375,dep:'Medium',isofix:2,nhv:'Adequate',smartphone:'CarPlay/AA from 2019+',auto:'6-spd torque converter (smooth)',scores:{reliability:4,cost:4,safety:3,practicality:4,price:4},good:['Naturally aspirated 1.6 — no turbo complexity','Torque converter — no DCT concerns','Proper crossover seating height'],warn:['No AEB on most budget examples','Lower mpg than turbo rivals','2015 NCAP less demanding']},
+{name:'Suzuki S-Cross Auto',gen:'2016–2021',size:'crossover',type:'petrol',status:'shortlist',sub8:false,price:'£7–10k',mpgLo:40,mpgHi:47,ins:'14–18',rel:4,ncap:'5★ 2016',aeb:false,cam:'Mid-trim+',boot:430,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2019+',auto:'6-spd torque converter / 1.0 Boosterjet',scores:{reliability:4,cost:4,safety:3,practicality:4,price:4},good:['Vitara sibling — same proven drivetrain','430L boot','More 3008-adjacent in size'],warn:['No AEB on most budget examples — verify','1.0 Boosterjet is turbocharged — different to 1.6','Less common than Vitara']},
+{name:'Mazda CX-3',gen:'2015–2021',size:'crossover',type:'petrol',status:'shortlist',sub8:false,price:'£7–10k',mpgLo:40,mpgHi:46,ins:'14–18',rel:5,ncap:'5★ 2015',aeb:true,cam:'Mid-trim+',boot:350,dep:'Low',isofix:2,nhv:'Excellent',smartphone:'CarPlay/AA from 2018+',auto:'6-spd torque converter (smooth)',scores:{reliability:5,cost:3,safety:4,practicality:3,price:4},good:['Toyota-adjacent reliability','Torque converter — no DCT concerns','Excellent build quality'],warn:['Smaller boot (350L)','Lower seating than typical crossover','2015 NCAP protocol']},
+{name:'Mazda CX-30',gen:'2019+',size:'crossover',type:'petrol',status:'shortlist',sub8:false,price:'£9–12k',mpgLo:38,mpgHi:44,ins:'15–19',rel:5,ncap:'5★ 2019',aeb:true,cam:'Standard',boot:430,dep:'Low',isofix:2,nhv:'Excellent — best in class',smartphone:'CarPlay/AA standard',auto:'6-spd torque converter (smooth)',scores:{reliability:5,cost:3,safety:5,practicality:4,price:2},good:['Toyota-adjacent reliability','Best motorway refinement in crossover class','5-star 2019 NCAP'],warn:['MPG lower than hybrid alternatives','Tight sub-£10k for clean examples','Lower seating than typical crossover']},
+{name:'Nissan Juke Gen 2',gen:'2019+',size:'crossover',type:'petrol',status:'shortlist',sub8:false,price:'£9–12k',mpgLo:40,mpgHi:47,ins:'16–20',rel:4,ncap:'5★ 2019',aeb:true,cam:'Most trims',boot:422,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'DCT (more reliable than Gen 1)',scores:{reliability:4,cost:3,safety:4,practicality:4,price:3},good:['Major reliability improvement over Gen 1','422L boot vs 251L on Gen 1','AEB standard'],warn:['Stretches sub-£11k — few clean examples','Avoid Gen 1 entirely','DCT less proven than torque converter']},
+{name:'SEAT Arona DSG',gen:'2017–2022',size:'crossover',type:'petrol',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:42,mpgHi:50,ins:'14–18',rel:3,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:400,dep:'Medium-high',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'7-spd DSG',scores:{reliability:3,cost:3,safety:4,practicality:4,price:3},good:['Proper crossover — higher seating','VW Group platform — cheap parts','AEB standard on most trims'],warn:['SEAT badge depreciates quickly','DSG servicing costs','Less reliable than Japanese rivals']},
+{name:'Skoda Karoq petrol DSG',gen:'2017–2022',size:'crossover',type:'petrol',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:42,mpgHi:50,ins:'14–19',rel:4,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:521,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2019+',auto:'7-spd DSG standard on most',scores:{reliability:4,cost:3,safety:4,practicality:5,price:3},good:['Best boot on list (521L)','DSG reliable on 1.5 TSI pairing','VW Group parts — cheap'],warn:['1.5 TSI preferred over 1.0 for crossover weight','DSG servicing costs','Less reliable than Japanese alternatives']},
+{name:'Volkswagen Golf petrol DSG',gen:'2017–2021',size:'hatchback',type:'petrol',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:45,mpgHi:52,ins:'14–18',rel:3,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:380,dep:'Medium',isofix:2,nhv:'Good — premium feel',smartphone:'CarPlay/AA from 2018+',auto:'7-spd DSG dry clutch',scores:{reliability:3,cost:3,safety:4,practicality:4,price:3},good:['Premium feel and refinement','1.4/1.5 TSI efficient','Timing chain replaced noted on some listings — check'],warn:['Less reliable than Japanese rivals','DSG servicing important','Higher insurance than superminis']},
+{name:'Volkswagen Polo DSG',gen:'2017–2021',size:'supermini',type:'petrol',status:'shortlist',sub8:false,price:'£7–10k',mpgLo:48,mpgHi:55,ins:'10–15',rel:3,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:351,dep:'Medium',isofix:2,nhv:'Good — premium feel',smartphone:'CarPlay/AA from 2018+',auto:'7-spd DSG',scores:{reliability:3,cost:3,safety:4,practicality:4,price:3},good:['Premium interior for class','1.0 TSI very fuel efficient','Parts same as Fabia — cheap'],warn:['VW badge adds premium vs Fabia','Early 2017 DSG had shudder reports','Less reliable than Japanese rivals']},
+{name:'Volkswagen T-Roc DSG',gen:'2018+',size:'crossover',type:'petrol',status:'shortlist',sub8:false,price:'£9–12k',mpgLo:40,mpgHi:48,ins:'16–21',rel:3,ncap:'5★ 2018',aeb:true,cam:'Mid-trim+',boot:445,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2019+',auto:'7-spd DSG',scores:{reliability:3,cost:3,safety:4,practicality:4,price:2},good:['Proper crossover — upright roofline and good visibility','Good size match to 3008','AEB standard'],warn:['Higher running costs than Japanese rivals','DSG servicing costs','Tight sub-£11k for clean examples']},
+{name:'Toyota Yaris petrol',gen:'2017–2020',size:'supermini',type:'petrol',status:'shortlist',sub8:true,price:'£5–8k',mpgLo:45,mpgHi:52,ins:'7–11',rel:5,ncap:'5★ 2020',aeb:true,cam:'Design trim+',boot:286,dep:'Low',isofix:2,nhv:'Adequate',smartphone:'CarPlay/AA from 2019+',auto:'Auto available but very rare',scores:{reliability:5,cost:4,safety:4,practicality:3,price:4},good:['Same platform reliability as hybrid','Toyota Safety Sense AEB standard from 2017','Sub-£5k easily for earlier examples'],warn:['Automatic very rare — expect premium','Camera needs Design trim+','Loses 10–15mpg vs equivalent hybrid']},
+{name:'Hyundai Kona petrol',gen:'2017–2022',size:'crossover',type:'petrol',status:'shortlist',sub8:false,price:'£8–10k',mpgLo:40,mpgHi:46,ins:'14–18',rel:4,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:374,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'DCT (available)',scores:{reliability:4,cost:3,safety:4,practicality:4,price:3},good:['Upright roofline — good visibility','AEB standard across most trims','Proper crossover seating position'],warn:['1.0 T-GDi early examples had oil consumption issues — 2018+ better','DCT service history important','Avoid pre-2018 1.0T if possible']},
+{name:'BMW 2 Series Active Tourer 218i',gen:'2015–2021',size:'mpv',type:'petrol',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:40,mpgHi:46,ins:'18–24',rel:3,ncap:'5★ 2014',aeb:false,cam:'Mid-trim+',boot:468,dep:'Medium',isofix:2,nhv:'Excellent — premium',smartphone:'CarPlay/AA from 2018+',auto:'ZF 8-spd torque converter (excellent)',scores:{reliability:3,cost:3,safety:3,practicality:4,price:3},good:['Closest 3008 feel match — elevated seating and motorway presence','ZF 8-speed torque converter — one of best autos at this price','Premium refinement at motorway speeds'],warn:['1.5 three-cylinder has timing chain tensioner concern on early examples','Higher servicing costs than Japanese','No AEB on most examples in budget']},
+// SHORTLIST DIESEL
+{name:'BMW 2 Series Active Tourer 218d',gen:'2015–2021',size:'mpv',type:'diesel',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:55,mpgHi:65,ins:'20–25',rel:3,ncap:'5★ 2014',aeb:false,cam:'Mid-trim+',boot:468,dep:'Medium',isofix:2,nhv:'Excellent — best motorway car on list',smartphone:'CarPlay/AA from 2018+',auto:'ZF 8-spd torque converter (excellent)',scores:{reliability:3,cost:4,safety:3,practicality:4,price:3},good:['Best motorway refinement on entire list','ZF 8-speed auto is silky smooth','Most 3008-like driving experience of all options'],warn:['Diesel — DPF needs regular motorway runs (you do this ✓)','Higher servicing costs than Japanese rivals','No AEB on most budget examples']},
+{name:'Volkswagen Golf TDI DSG',gen:'2017–2021',size:'hatchback',type:'diesel',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:58,mpgHi:65,ins:'14–18',rel:3,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:380,dep:'Medium',isofix:2,nhv:'Good — premium feel',smartphone:'CarPlay/AA from 2018+',auto:'7-spd DSG dry clutch',scores:{reliability:3,cost:4,safety:4,practicality:4,price:3},good:['Excellent real-world diesel mpg (58–65mpg)','AEB standard on this generation','Premium interior quality'],warn:['Diesel — DPF needs regular motorway runs (you do this ✓)','DSG service history important','Less reliable than Japanese rivals']},
+{name:'Skoda Karoq TDI DSG',gen:'2017–2022',size:'crossover',type:'diesel',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:50,mpgHi:58,ins:'15–20',rel:4,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:521,dep:'Medium',isofix:2,nhv:'Good — well insulated',smartphone:'CarPlay/AA from 2019+',auto:'7-spd DSG',scores:{reliability:4,cost:4,safety:4,practicality:5,price:3},good:['Best boot on list (521L)','VW Group TDI engine — proven and reliable','Good diesel mpg for a crossover'],warn:['Diesel — DPF needs regular motorway runs (you do this ✓)','DSG servicing costs','Crossover weight reduces efficiency vs Golf']},
+{name:'SEAT Ateca TDI DSG',gen:'2016–2022',size:'crossover',type:'diesel',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:50,mpgHi:58,ins:'16–21',rel:3,ncap:'5★ 2016',aeb:true,cam:'Mid-trim+',boot:510,dep:'Medium-high',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'DSG standard on most',scores:{reliability:3,cost:4,safety:4,practicality:5,price:3},good:['Same VW Group TDI as Karoq','SEAT badge depreciates faster — good for buyer','510L boot'],warn:['Diesel — DPF needs regular motorway runs (you do this ✓)','Less reliable than Japanese alternatives','DSG servicing costs']},
+{name:'Kia Sportage CRDi DCT',gen:'2016–2021',size:'crossover',type:'diesel',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:48,mpgHi:55,ins:'18–23',rel:4,ncap:'5★ 2016',aeb:false,cam:'Mid-trim+',boot:503,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'7-spd DCT',scores:{reliability:4,cost:4,safety:3,practicality:5,price:3},good:['Direct 3008 size competitor','503L boot','Kia reliability on diesel is solid'],warn:['AEB not standard on all trims — verify','Diesel — DPF needs regular motorway runs (you do this ✓)','High mileage examples common in budget']},
+{name:'Hyundai Tucson CRDi DCT',gen:'2018–2020',size:'suv',type:'diesel',status:'shortlist',sub8:false,price:'£8–11k',mpgLo:48,mpgHi:55,ins:'20–25',rel:4,ncap:'5★ 2016',aeb:false,cam:'Mid-trim+',boot:513,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2019+',auto:'7-spd DCT',scores:{reliability:4,cost:4,safety:3,practicality:5,price:3},good:['Direct 3008 size match — proper SUV stance','513L boot','Hyundai/Kia reliability on diesel solid'],warn:['AEB not standard on all trims — verify','Diesel — DPF needs regular motorway runs (you do this ✓)','High mileage at budget prices']},
+// GOOD IF CHEAP
+{name:'BMW 225xe Active Tourer PHEV',gen:'2015–2021',size:'mpv',type:'hybrid',status:'good-deal',sub8:false,price:'Usually £10–14k',mpgLo:40,mpgHi:55,ins:'22–27',rel:3,ncap:'5★ 2014',aeb:false,cam:'Mid-trim+',boot:468,dep:'High',isofix:2,nhv:'Excellent',smartphone:'CarPlay/AA from 2018+',auto:'Auto (always)',scores:{reliability:3,cost:3,safety:3,practicality:4,price:1},good:['3008-like driving position and refinement','PHEV gives electric running for short trips','If found sub-£10k — interesting value'],warn:['Over budget at typical prices','Battery range diminishing on older examples — check real EV range','Higher servicing costs than Japanese']},
+{name:'Honda CR-V Hybrid',gen:'2018+',size:'suv',type:'hybrid',status:'good-deal',sub8:false,price:'Usually £13–17k',mpgLo:40,mpgHi:47,ins:'20–25',rel:4,ncap:'5★ 2018',aeb:true,cam:'Standard',boot:497,dep:'Low-medium',isofix:3,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'e-CVT (always)',scores:{reliability:4,cost:2,safety:5,practicality:5,price:1},good:['Honda hybrid system proven','Spacious 497L boot','If found sub-£11k with history — strong buy'],warn:['Over budget at typical prices','Higher insurance and running costs','Watch for high mileage at lower prices']},
+{name:'Hyundai Tucson Hybrid',gen:'2021+',size:'suv',type:'hybrid',status:'good-deal',sub8:false,price:'Usually £15–20k',mpgLo:40,mpgHi:48,ins:'20–25',rel:4,ncap:'5★ 2020',aeb:true,cam:'Standard',boot:616,dep:'Low-medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'Auto (always)',scores:{reliability:4,cost:2,safety:5,practicality:5,price:1},good:['Direct 3008 size competitor','5-star new 2020 NCAP','616L boot'],warn:['Over budget for almost all examples','If early example sub-£12k — worth serious consideration','Higher insurance group']},
+{name:'Lexus CT 200h',gen:'2011–2017',size:'hatchback',type:'hybrid',status:'good-deal',sub8:true,price:'£5–9k',mpgLo:48,mpgHi:55,ins:'17–22',rel:5,ncap:'5★ 2011',aeb:false,cam:'Higher trims',boot:278,dep:'Very low',isofix:2,nhv:'Excellent — Lexus refinement',smartphone:'None on most',auto:'CVT (always)',scores:{reliability:5,cost:3,safety:3,practicality:3,price:4},good:['Toyota Yaris hybrid drivetrain underneath','Lexus build quality','Exceptional reliability value if found cheap'],warn:['Very small boot (278L)','No AEB','Dated infotainment — no CarPlay on most']},
+{name:'Lexus UX 250h',gen:'2019+',size:'crossover',type:'hybrid',status:'good-deal',sub8:false,price:'Usually £13–18k',mpgLo:48,mpgHi:55,ins:'20–25',rel:5,ncap:'5★ 2019',aeb:true,cam:'Standard',boot:320,dep:'Low',isofix:2,nhv:'Excellent',smartphone:'CarPlay/AA standard',auto:'e-CVT (always)',scores:{reliability:5,cost:3,safety:5,practicality:3,price:1},good:['Toyota hybrid in premium Lexus crossover body','5-star 2019 NCAP','If found sub-£12k — exceptional buy'],warn:['Over budget at typical prices','Small boot (320L)','Use Toyota independent not Lexus dealer for servicing']},
+{name:'Mazda CX-5',gen:'2017+',size:'suv',type:'petrol',status:'good-deal',sub8:false,price:'Usually £11–15k',mpgLo:36,mpgHi:42,ins:'18–23',rel:5,ncap:'5★ 2017',aeb:true,cam:'Standard',boot:506,dep:'Low',isofix:2,nhv:'Excellent',smartphone:'CarPlay/AA standard',auto:'6-spd torque converter',scores:{reliability:5,cost:2,safety:5,practicality:5,price:1},good:['Toyota-adjacent reliability','Torque converter auto — no DCT concerns','If found sub-£11k with history — exceptional value'],warn:['Usually over budget','Lower mpg than hybrid alternatives','Higher insurance group']},
+{name:'Toyota RAV4 Hybrid',gen:'2019+',size:'suv',type:'hybrid',status:'good-deal',sub8:false,price:'Usually £14–18k',mpgLo:40,mpgHi:48,ins:'19–24',rel:5,ncap:'5★ 2019',aeb:true,cam:'Standard',boot:580,dep:'Very low',isofix:3,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'e-CVT (always)',scores:{reliability:5,cost:3,safety:5,practicality:5,price:1},good:['Best hybrid SUV in reliability terms','580L boot','If found sub-£12k with history — exceptional buy'],warn:['Over budget at typical prices','Higher insurance group','Higher service costs than supermini hybrids']},
+{name:'Volkswagen Tiguan petrol DSG',gen:'2016+',size:'suv',type:'petrol',status:'good-deal',sub8:false,price:'Usually £11–15k',mpgLo:38,mpgHi:44,ins:'19–24',rel:3,ncap:'5★ 2016',aeb:true,cam:'Mid-trim+',boot:520,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'7-spd DSG',scores:{reliability:3,cost:2,safety:4,practicality:5,price:1},good:['Direct 3008 size competitor','If found sub-£11k with full history — strong buy','VW quality'],warn:['Usually over budget for petrol auto','Higher servicing costs than Japanese','DSG service history critical']},
+{name:'Skoda Octavia TDI DSG',gen:'2017–2021',size:'hatchback',type:'diesel',status:'good-deal',sub8:false,price:'£8–11k',mpgLo:58,mpgHi:65,ins:'16–20',rel:4,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:590,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2019+',auto:'7-spd DSG',scores:{reliability:4,cost:4,safety:4,practicality:5,price:3},good:['Exceptional boot space (590L)','VW Group TDI reliability','Great value for size'],warn:['Larger than most shortlist cars — check if size appropriate','Diesel — DPF needs regular motorway runs (you do this ✓)','High mileage examples at budget prices']},
+{name:'Audi Q3 TDI S Tronic',gen:'2015–2018',size:'suv',type:'diesel',status:'good-deal',sub8:false,price:'Usually £9–13k',mpgLo:50,mpgHi:58,ins:'22–28',rel:3,ncap:'5★ 2014',aeb:false,cam:'Mid-trim+',boot:460,dep:'High',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'S Tronic DSG',scores:{reliability:3,cost:2,safety:3,practicality:4,price:2},good:['Premium small SUV — good size match','If found sub-£10k with full history — reasonable','Audi quality'],warn:['High servicing costs at Audi specialists','AEB not standard on this generation','High mileage examples at budget — verify carefully']},
+{name:'BMW X1 diesel',gen:'2015–2019',size:'suv',type:'diesel',status:'good-deal',sub8:false,price:'Usually £10–14k',mpgLo:52,mpgHi:60,ins:'22–27',rel:3,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:505,dep:'High',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'Auto',scores:{reliability:3,cost:2,safety:3,practicality:4,price:1},good:['Premium small SUV feel','If found sub-£11k with full history — interesting','BMW quality'],warn:['High servicing costs — use BMW independent','AEB not standard on this generation','Verify full service history carefully']},
+// CAUTION
+{name:'Ford B-Max 1.6 Auto',gen:'2012–2017',size:'mpv',type:'petrol',status:'caution',sub8:true,price:'£4–7k',mpgLo:38,mpgHi:42,ins:'12–16',rel:3,ncap:'5★ 2012',aeb:false,cam:'Higher trims',boot:318,dep:'High',isofix:2,nhv:'Adequate',smartphone:'Partial',auto:'6-spd torque converter',scores:{reliability:3,cost:3,safety:2,practicality:4,price:4},good:['Torque converter auto — smooth and reliable','Sliding rear doors practical','Budget option'],warn:['No AEB','NCAP 2012 protocol — older','38–42mpg — not efficient']},
+{name:'Hyundai i20 Gen 2',gen:'2014–2020',size:'supermini',type:'petrol',status:'caution',sub8:false,price:'£7–10k',mpgLo:42,mpgHi:48,ins:'10–14',rel:4,ncap:'5★ 2014',aeb:false,cam:'Higher trims',boot:326,dep:'Medium-high',isofix:2,nhv:'Adequate',smartphone:'Partial',auto:'4-spd torque converter (old fashioned)',scores:{reliability:4,cost:3,safety:2,practicality:3,price:3},good:['Hyundai reliability solid','Naturally aspirated petrol — simple'],warn:['4-speed auto is old fashioned and less refined','No AEB','Doesn\'t beat anything on main shortlist at similar price']},
+{name:'Hyundai i20 Gen 3',gen:'2020+',size:'supermini',type:'petrol',status:'caution',sub8:false,price:'£9–12k',mpgLo:48,mpgHi:54,ins:'12–16',rel:4,ncap:'5★ 2020',aeb:true,cam:'Mid-trim+',boot:351,dep:'Low-medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'7-spd DCT',scores:{reliability:4,cost:3,safety:4,practicality:3,price:2},good:['Much improved over Gen 2','AEB standard','48V mild hybrid option'],warn:['Hard to find in budget in automatic','DCT service history important','Doesn\'t clearly beat Ioniq or Jazz at similar money']},
+{name:'Kia Stonic DCT',gen:'2017+',size:'crossover',type:'petrol',status:'caution',sub8:false,price:'£9–13k',mpgLo:40,mpgHi:47,ins:'14–18',rel:4,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:352,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2019+',auto:'7-spd DCT',scores:{reliability:4,cost:3,safety:4,practicality:3,price:2},good:['AEB standard on most trims','Crossover seating position','Kia reliability solid'],warn:['Kia Niro is a better car at similar money','Boot (352L) smaller than Niro','Tight sub-£11k for clean automatic examples']},
+{name:'Kia Venga Auto',gen:'2010–2019',size:'mpv',type:'petrol',status:'caution',sub8:true,price:'£4–7k',mpgLo:40,mpgHi:45,ins:'10–14',rel:4,ncap:'4★ 2010',aeb:false,cam:'Higher trims',boot:320,dep:'High',isofix:2,nhv:'Adequate',smartphone:'None on most',auto:'4-spd torque converter',scores:{reliability:4,cost:3,safety:2,practicality:3,price:4},good:['Upright body gives decent visibility','4-speed torque converter — reliable','Budget runabout'],warn:['No AEB','NCAP 4-star 2010 — dated','Very dated infotainment']},
+{name:'MG ZS Auto',gen:'2017+',size:'crossover',type:'petrol',status:'caution',sub8:false,price:'£8–11k',mpgLo:38,mpgHi:44,ins:'14–18',rel:3,ncap:'5★ 2018',aeb:true,cam:'Most trims',boot:448,dep:'High',isofix:2,nhv:'Adequate',smartphone:'CarPlay/AA standard',auto:'Auto (available)',scores:{reliability:3,cost:3,safety:4,practicality:4,price:4},good:['Good spec for money — camera and CarPlay standard','5-star NCAP 2018','Large boot (448L)'],warn:['Parts and long-term support uncertainty as Chinese brand matures','Reliability data less established than Japanese','Fast depreciation — future resale uncertain']},
+{name:'Mercedes-Benz B Class petrol',gen:'2018–2022',size:'mpv',type:'petrol',status:'caution',sub8:false,price:'£8–11k',mpgLo:38,mpgHi:44,ins:'18–23',rel:3,ncap:'5★ 2018',aeb:true,cam:'Mid-trim+',boot:488,dep:'High',isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'7G-DCT (smooth)',scores:{reliability:3,cost:2,safety:4,practicality:4,price:2},good:['Upright MPV body — good visibility','AEB standard on this generation','488L boot'],warn:['Higher servicing costs than Japanese','Mercedes reliability at this budget variable','High mileage examples common — verify history']},
+{name:'Mitsubishi Eclipse Cross',gen:'2017–2021',size:'crossover',type:'petrol',status:'caution',sub8:false,price:'£8–11k',mpgLo:38,mpgHi:44,ins:'18–22',rel:3,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:448,dep:'High',isofix:2,nhv:'Adequate',smartphone:'CarPlay/AA from 2019+',auto:'CVT (available)',scores:{reliability:3,cost:3,safety:4,practicality:4,price:3},good:['Proper crossover size and stance','AEB standard','CVT auto is smooth'],warn:['Mitsubishi parts network thinning after EU withdrawal','Long-term parts availability uncertain','Doesn\'t clearly beat Suzuki or Hyundai alternatives']},
+{name:'Nissan Micra K13',gen:'2010–2017',size:'supermini',type:'petrol',status:'caution',sub8:true,price:'£4–7k',mpgLo:42,mpgHi:48,ins:'8–12',rel:4,ncap:'4★ 2010',aeb:false,cam:'Higher trims',boot:265,dep:'High',isofix:2,nhv:'Adequate',smartphone:'None on most',auto:'CVT (available)',scores:{reliability:4,cost:4,safety:2,practicality:3,price:5},good:['Very cheap to run and insure','CVT auto available','Simple and reliable'],warn:['No AEB','NCAP 4-star 2010 protocol','Dated — no CarPlay']},
+{name:'Nissan Qashqai petrol CVT',gen:'2014–2021',size:'crossover',type:'petrol',status:'caution',sub8:false,price:'£6–10k',mpgLo:38,mpgHi:44,ins:'14–19',rel:3,ncap:'5★ 2014',aeb:false,cam:'Higher trims',boot:430,dep:'Medium-high',isofix:2,nhv:'Adequate',smartphone:'CarPlay/AA from 2019+',auto:'CVT — mixed reliability',scores:{reliability:3,cost:3,safety:3,practicality:4,price:4},good:['Right size for 3008 replacement','Cheap parts','Wide availability'],warn:['1.2 DIG-T engine has known reliability concerns — avoid this engine specifically','AEB not standard this generation','CVT reliability reviews mixed']},
+{name:'SEAT Leon petrol DSG',gen:'2017–2020',size:'hatchback',type:'petrol',status:'caution',sub8:false,price:'£8–11k',mpgLo:42,mpgHi:50,ins:'16–20',rel:3,ncap:'5★ 2017',aeb:true,cam:'Mid-trim+',boot:380,dep:'High',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'DSG',scores:{reliability:3,cost:3,safety:4,practicality:4,price:3},good:['AEB standard','Good spec for money','DSG auto smooth'],warn:['Doesn\'t clearly beat Golf or Fabia at similar money','SEAT depreciates faster','DSG service history important']},
+{name:'Skoda Yeti DSG',gen:'2013–2017',size:'crossover',type:'petrol',status:'caution',sub8:false,price:'£8–11k',mpgLo:38,mpgHi:44,ins:'16–20',rel:4,ncap:'5★ 2009',aeb:false,cam:'Higher trims',boot:405,dep:'Medium',isofix:2,nhv:'Adequate',smartphone:'Partial',auto:'DSG (available)',scores:{reliability:4,cost:3,safety:2,practicality:4,price:3},good:['VW Group reliability','Proper crossover seating position','Good value if found cheaply'],warn:['NCAP 2009 — very dated safety standards','No AEB','Older infotainment — limited CarPlay']},
+{name:'Nissan X-Trail diesel',gen:'2017–2021',size:'suv',type:'diesel',status:'caution',sub8:false,price:'£7–10k',mpgLo:42,mpgHi:50,ins:'18–22',rel:3,ncap:'5★ 2017',aeb:false,cam:'Mid-trim+',boot:565,dep:'High',isofix:3,nhv:'Adequate',smartphone:'CarPlay/AA from 2019+',auto:'CVT — mixed reviews',scores:{reliability:3,cost:3,safety:3,practicality:5,price:3},good:['Large practical SUV — 565L boot','7-seat option on some variants','Right size for 3008 replacement'],warn:['CVT reliability reviews mixed for this size car','AEB not standard on this generation','Diesel — DPF needs regular motorway runs (you do this ✓)']},
+{name:'Volkswagen Golf SV DSG',gen:'2014–2018',size:'mpv',type:'petrol',status:'caution',sub8:false,price:'£7–10k',mpgLo:40,mpgHi:46,ins:'16–20',rel:3,ncap:'5★ 2014',aeb:false,cam:'Mid-trim+',boot:500,dep:'Medium',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'DSG (available)',scores:{reliability:3,cost:3,safety:3,practicality:4,price:3},good:['Taller body than Golf — better visibility','500L boot','VW quality'],warn:['No AEB on most budget examples','Older generation — dated infotainment','DSG on 1.4 TSI has early shudder reports']},
+// AVOID
+{name:'Peugeot 208 / 2008 / 3008 / 308 PureTech',gen:'2016+',size:'crossover',type:'petrol',status:'avoid',sub8:false,price:'£6–11k',mpgLo:38,mpgHi:44,ins:'17–22',rel:2,ncap:'5★ 2016',aeb:true,cam:'Standard',boot:434,dep:'High',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'EAT auto',scores:{reliability:2,cost:2,safety:4,practicality:5,price:3},good:['Good safety tech on newer examples','Familiar — you know the 3008'],warn:['1.2 PureTech timing chain stretching — widespread documented problem','Repair cost £800–1500+ if chain fails','Only consider with written documented chain inspection and replacement history']},
+{name:'Citroen C3 Aircross / C4 Cactus / DS3',gen:'2017+',size:'crossover',type:'petrol',status:'avoid',sub8:false,price:'£7–11k',mpgLo:38,mpgHi:46,ins:'14–18',rel:2,ncap:'5★ 2017',aeb:false,cam:'Mid-trim+',boot:410,dep:'High',isofix:2,nhv:'Good',smartphone:'CarPlay/AA from 2018+',auto:'EAT6 torque converter',scores:{reliability:2,cost:2,safety:3,practicality:4,price:3},good:['EAT6 torque converter auto is smooth'],warn:['Same PSA PureTech 1.2 timing chain family as Peugeot','Avoid without documented chain history','DS 3 Crossback carries same risk']},
+{name:'Vauxhall Crossland / Corsa / Grandland X',gen:'2017+',size:'crossover',type:'petrol',status:'avoid',sub8:false,price:'£5–11k',mpgLo:38,mpgHi:48,ins:'13–20',rel:2,ncap:'5★ 2017',aeb:false,cam:'Mid-trim+',boot:410,dep:'High',isofix:2,nhv:'Adequate',smartphone:'CarPlay/AA from 2019+',auto:'8-spd torque converter',scores:{reliability:2,cost:3,safety:3,practicality:4,price:4},good:['8-speed torque converter auto is smooth','Competitive pricing'],warn:['Same PSA PureTech 1.2 engine — same timing chain risk','Only consider 2019+ with documented chain inspection history','Avoid any example without specific chain service records']},
+{name:'Ford Focus / Fiesta / EcoSport auto',gen:'2015–2019',size:'hatchback',type:'petrol',status:'avoid',sub8:false,price:'£5–9k',mpgLo:38,mpgHi:46,ins:'13–20',rel:2,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:316,dep:'High',isofix:2,nhv:'Adequate',smartphone:'Partial',auto:'Powershift DCT — problematic',scores:{reliability:2,cost:2,safety:3,practicality:3,price:3},good:['Cheapest parts of any car on the list'],warn:['Powershift DCT automatic has documented juddering and clutch wear issues','Avoid automatic variant specifically','Ford C-Max diesel Powershift carries same concern']},
+{name:'Renault Kadjar / Captur non-E-Tech',gen:'2015–2020',size:'crossover',type:'petrol',status:'avoid',sub8:false,price:'£6–10k',mpgLo:38,mpgHi:44,ins:'15–20',rel:2,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:472,dep:'High',isofix:2,nhv:'Adequate',smartphone:'Partial',auto:'CVT / EDC — mixed reliability',scores:{reliability:2,cost:2,safety:3,practicality:4,price:3},good:['Practical boot on Kadjar (472L)'],warn:['CVT reliability reviews mixed','Overall reliability patchier than Japanese alternatives','Renault Clio E-Tech 2020+ is a completely different and much better car']},
+{name:'Nissan Juke Gen 1',gen:'2010–2019',size:'crossover',type:'petrol',status:'avoid',sub8:false,price:'£6–9k',mpgLo:36,mpgHi:42,ins:'16–20',rel:3,ncap:'5★ 2010',aeb:false,cam:'Mid-trim+',boot:251,dep:'High',isofix:2,nhv:'Poor — noisy at speed',smartphone:'Partial',auto:'CVT (Gen 1)',scores:{reliability:3,cost:3,safety:2,practicality:2,price:3},good:['Relatively cheap'],warn:['Tiny 251L boot — fundamental limitation','Older 2010 NCAP protocol','Gen 2 from 2019 is a completely different and much better car']},
+{name:'Mitsubishi Outlander PHEV',gen:'2014–2021',size:'suv',type:'hybrid',status:'avoid',sub8:false,price:'£5–10k',mpgLo:25,mpgHi:35,ins:'22–27',rel:2,ncap:'5★ 2013',aeb:false,cam:'Standard',boot:463,dep:'Very high',isofix:3,nhv:'Adequate',smartphone:'Partial',auto:'Auto (always)',scores:{reliability:2,cost:1,safety:2,practicality:4,price:3},good:['Large SUV with good ground clearance'],warn:['Battery degradation severe — often only 10–15 miles real EV range on budget examples','Heavy without working battery — poor fuel economy','Mitsubishi parts network thinning after EU withdrawal']},
+{name:'Fiat 500X / Alfa Giulietta',gen:'2015+',size:'crossover',type:'petrol',status:'avoid',sub8:false,price:'£6–10k',mpgLo:35,mpgHi:42,ins:'18–24',rel:2,ncap:'5★ 2014',aeb:false,cam:'Mid-trim+',boot:350,dep:'Very high',isofix:2,nhv:'Adequate',smartphone:'Partial',auto:'DCT (Fiat) / TCT (Alfa)',scores:{reliability:2,cost:2,safety:3,practicality:3,price:3},good:['Stylish exterior'],warn:['MultiAir engine reliability concerns on 500X','Alfa TCT gearbox reliability concerns','High running and servicing costs for budget examples']},
+{name:'Jeep Renegade',gen:'2015+',size:'crossover',type:'petrol',status:'avoid',sub8:false,price:'£7–11k',mpgLo:32,mpgHi:38,ins:'20–25',rel:2,ncap:'5★ 2015',aeb:false,cam:'Mid-trim+',boot:351,dep:'Very high',isofix:2,nhv:'Poor',smartphone:'Partial',auto:'DDCT',scores:{reliability:2,cost:1,safety:3,practicality:3,price:3},good:['Off-road capability'],warn:['Reliability record significantly below all other options','Parts expensive','Avoid']},
+{name:'Renault Arkana',gen:'2021+',size:'crossover',type:'petrol',status:'avoid',sub8:false,price:'£10–14k',mpgLo:40,mpgHi:47,ins:'16–20',rel:3,ncap:'5★ 2021',aeb:true,cam:'Standard',boot:513,dep:'High',isofix:2,nhv:'Good',smartphone:'CarPlay/AA standard',auto:'EDC auto',scores:{reliability:3,cost:3,safety:4,practicality:4,price:2},good:['Good safety tech','5-star 2021 NCAP'],warn:['Coupe SUV roofline — poor rear visibility confirmed from personal test drive','Felt cramped in drivers seat from personal experience','Not recommended given your confirmed preference for upright roofline']},
+{name:'City cars — Aygo / Peugeot 108 / Picanto',gen:'any',size:'supermini',type:'petrol',status:'avoid',sub8:true,price:'£4–8k',mpgLo:42,mpgHi:52,ins:'4–8',rel:4,ncap:'1–4★',aeb:false,cam:'Rarely',boot:168,dep:'Medium',isofix:1,nhv:'Poor — noisy at motorway speed',smartphone:'None on most',auto:'ASG (automated manual — not true auto)',scores:{reliability:4,cost:4,safety:2,practicality:1,price:5},good:['Very cheap to run','Low insurance'],warn:['ASG is not a true automatic — jerky and unpleasant','Wrong class entirely for your requirements','Would feel dramatically smaller than 3008']},
+{name:'Infiniti Q30',gen:'2015–2019',size:'hatchback',type:'diesel',status:'avoid',sub8:false,price:'£7–10k',mpgLo:42,mpgHi:50,ins:'22–27',rel:3,ncap:'5★ 2016',aeb:false,cam:'Mid-trim+',boot:368,dep:'Very high',isofix:2,nhv:'Good',smartphone:'Partial',auto:'DCT',scores:{reliability:3,cost:2,safety:3,practicality:3,price:3},good:['Premium feel'],warn:['Niche model — parts expensive and hard to source','Very high depreciation','Not worth the parts/servicing risk over Japanese alternatives']},
 ];
-
-// ================================================================
-// WEIGHTS — change v: values to set defaults
-// ================================================================
-const W = {
-  reliability:  {label:'Reliability & longevity', v:25},
-  cost:         {label:'Running cost',             v:25},
-  safety:       {label:'Safety & tech',            v:20},
-  practicality: {label:'Practicality',             v:15},
-  price:        {label:'Upfront price',            v:15},
-};
-
-// ================================================================
-// STATE
-// ================================================================
-let activeFilter = 'all';
-let scoreFilter  = 'all';
-let sortCol = '';
-let sortDir = 1;
-
-// ================================================================
-// TABS
-// ================================================================
-function showTab(id, el) {
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  el.classList.add('active');
-}
-
-// ================================================================
-// FILTERS
-// ================================================================
-function setFilter(f, el) {
-  activeFilter = f;
-  document.querySelectorAll('.filter-bar .filter-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderTable();
-}
-function setSF(f, el) {
-  scoreFilter = f;
-  document.querySelectorAll('#score-filters .filter-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderScores();
-}
-function filtered() {
-  return CARS.filter(c=>{
-    if(activeFilter==='shortlist') return c.status==='shortlist';
-    if(activeFilter==='hybrid')    return c.type==='hybrid' && c.status!=='avoid';
-    if(activeFilter==='petrol')    return c.type==='petrol' && c.status!=='avoid';
-    if(activeFilter==='crossover') return (c.size==='crossover'||c.size==='suv') && c.status!=='avoid';
-    if(activeFilter==='supermini') return c.size==='supermini' && c.status!=='avoid';
-    if(activeFilter==='sub5')      return c.sub5;
-    return true;
-  });
-}
-
-// ================================================================
-// TABLE
-// ================================================================
-function sortBy(col) {
-  if(sortCol===col) sortDir*=-1; else {sortCol=col;sortDir=1;}
-  renderTable();
-}
-function renderTable() {
-  const tbody = document.getElementById('ctbody');
-  tbody.innerHTML = '';
-  let cars = [...filtered()];
-  if(sortCol) {
-    cars.sort((a,b)=>{
-      let av = a[sortCol]==='mpg' ? a.mpgLo : (a[sortCol]??'');
-      let bv = b[sortCol]==='mpg' ? b.mpgLo : (b[sortCol]??'');
-      if(sortCol==='mpgLo'){av=a.mpgLo;bv=b.mpgLo;}
-      if(typeof av==='number') return (av-bv)*sortDir;
-      return String(av).localeCompare(String(bv))*sortDir;
-    });
-  }
-  const labels = {shortlist:'Recommended shortlist','good-deal':'Usually over budget — good deal if found cheap',avoid:'Approach with caution / avoid'};
-  let lastStatus = '';
-  cars.forEach(c=>{
-    if(c.status!==lastStatus){
-      const sep=document.createElement('tr');
-      sep.className='section-hdr';
-      sep.innerHTML=`<td colspan="11">${labels[c.status]||c.status}</td>`;
-      tbody.appendChild(sep);
-      lastStatus=c.status;
-    }
-    const tr=document.createElement('tr');
-    const ttag = c.type==='hybrid'?'<span class="tag tag-h">H</span>':c.status==='avoid'?'<span class="tag tag-!">!</span>':'<span class="tag tag-p">P</span>';
-    const stars = '★'.repeat(c.rel)+'☆'.repeat(5-c.rel);
-    const relCol = c.rel>=4?'good':c.rel===3?'mid':'bad';
-    tr.innerHTML=`
-      <td><span class="car-name">${c.name}${ttag}</span><span class="car-gen">${c.gen}</span></td>
-      <td class="muted" style="font-size:11px">${c.size}</td>
-      <td class="good">${c.mpgLo}–${c.mpgHi}</td>
-      <td>${c.ins}</td>
-      <td class="stars ${relCol}">${stars}</td>
-      <td style="font-size:11px;white-space:nowrap">${c.ncap}</td>
-      <td>${c.aeb?'<span class="good">Yes</span>':'<span class="bad">No</span>'}</td>
-      <td style="font-size:11px;color:var(--text-secondary)">${c.cam}</td>
-      <td>${c.boot}L</td>
-      <td style="font-size:11px;color:var(--text-secondary)">${c.dep}</td>
-      <td>${c.sub5?'<span class="good">Yes</span>':'<span class="muted">—</span>'}</td>
-    `;
-    tr.onclick=()=>openModal(c);
-    tbody.appendChild(tr);
-  });
-}
-
-// ================================================================
-// MODAL
-// ================================================================
-function openModal(c) {
-  const inner = document.getElementById('modal');
-  const ttag = c.type==='hybrid'?'<span class="tag tag-h">Hybrid</span>':'<span class="tag tag-p">Petrol</span>';
-  const stag = c.status==='good-deal'?'<span class="tag tag-deal">Deal?</span>':c.status==='avoid'?'<span class="tag tag-!">Caution</span>':'';
-  const stars = '★'.repeat(c.rel)+'☆'.repeat(5-c.rel);
-  inner.innerHTML=`
-    <div class="modal-hdr">
-      <div><div class="modal-title">${c.name} ${ttag} ${stag}</div><div class="modal-sub">${c.gen} &middot; ${c.size} &middot; ${c.price}</div></div>
-      <button class="modal-close" onclick="closeModal()">Close</button>
-    </div>
-    <div class="modal-grid">
-      <div><span class="mf-label">Real MPG</span><span class="mf-val good">${c.mpgLo}–${c.mpgHi}</span></div>
-      <div><span class="mf-label">Insurance</span><span class="mf-val">Grp ${c.ins}</span></div>
-      <div><span class="mf-label">Boot</span><span class="mf-val">${c.boot}L</span></div>
-      <div><span class="mf-label">ISOFIX</span><span class="mf-val">${c.isofix} pts</span></div>
-      <div><span class="mf-label">Rev. camera</span><span class="mf-val" style="font-size:12px">${c.cam}</span></div>
-      <div><span class="mf-label">AEB</span><span class="mf-val ${c.aeb?'good':'bad'}">${c.aeb?'Standard':'Not std'}</span></div>
-      <div><span class="mf-label">NCAP</span><span class="mf-val" style="font-size:12px">${c.ncap}</span></div>
-      <div><span class="mf-label">Reliability</span><span class="mf-val stars">${stars}</span></div>
-      <div><span class="mf-label">Gearbox</span><span class="mf-val" style="font-size:11px">${c.auto}</span></div>
-      <div><span class="mf-label">Depreciation</span><span class="mf-val" style="font-size:11px">${c.dep}</span></div>
-      <div><span class="mf-label">Motorway NVH</span><span class="mf-val" style="font-size:11px">${c.nhv}</span></div>
-      <div><span class="mf-label">Smartphone</span><span class="mf-val" style="font-size:11px">${c.smartphone}</span></div>
-    </div>
-    <div class="issues-label">Green flags</div>
-    <div style="margin-bottom:10px">${(c.good||[]).map(g=>`<div class="wo-row"><span class="wo-icon good">✓</span><span class="wo-text">${g}</span></div>`).join('')}</div>
-    <div class="issues-label">Watch-outs</div>
-    <div class="issues-box">${(c.warn||[]).map(w=>`<div style="margin-bottom:4px">⚠ ${w}</div>`).join('')}</div>
-  `;
-  document.getElementById('overlay').classList.add('open');
-}
-function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
-function closeOutside(e){ if(e.target===document.getElementById('overlay')) closeModal(); }
-
-// ================================================================
-// SCORING
-// ================================================================
-function buildWeights() {
-  const c = document.getElementById('weight-controls');
-  c.innerHTML='';
-  Object.entries(W).forEach(([k,w])=>{
-    const d=document.createElement('div');
-    d.className='w-row';
-    d.innerHTML=`<div class="w-label"><span class="w-name">${w.label}</span><span class="w-val" id="wv-${k}">${w.v}%</span></div><input type="range" min="0" max="50" step="5" value="${w.v}" oninput="updW('${k}',this.value)">`;
-    c.appendChild(d);
-  });
-  updMeta();
-}
-function updW(k,v){
-  W[k].v=parseInt(v);
-  document.getElementById('wv-'+k).textContent=v+'%';
-  updMeta();
-  renderScores();
-}
-function updMeta(){
-  const total=Object.values(W).reduce((s,w)=>s+w.v,0);
-  const el=document.getElementById('total-lbl');
-  el.textContent='Weights sum to '+total+'%'+(total===100?' — balanced.':' — adjust to reach 100% for clean scores.');
-  el.className='total-label'+(total===100?' ok':'');
-}
-function calcScore(c){
-  const total=Object.values(W).reduce((s,w)=>s+w.v,0);
-  if(!total) return 0;
-  let s=0;
-  Object.entries(W).forEach(([k,w])=>{ s+=(c.scores[k]/5)*w.v; });
-  return Math.round((s/total)*100);
-}
-function renderScores(){
-  let pool=CARS.filter(c=>c.status!=='avoid');
-  if(scoreFilter==='shortlist') pool=pool.filter(c=>c.status==='shortlist');
-  if(scoreFilter==='hybrid')    pool=pool.filter(c=>c.type==='hybrid');
-  const scored=pool.map(c=>({...c,score:calcScore(c)})).sort((a,b)=>b.score-a.score);
-  const maxS=scored[0]?.score||1;
-  const el=document.getElementById('score-list');
-  el.innerHTML='';
-  scored.forEach((c,i)=>{
-    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rn';
-    const ttag=c.type==='hybrid'?'<span class="tag tag-h" style="font-size:9px">H</span>':'<span class="tag tag-p" style="font-size:9px">P</span>';
-    const dtag=c.status==='good-deal'?'<span class="tag tag-deal" style="font-size:9px">deal?</span>':'';
-    const d=document.createElement('div');
-    d.className='score-row';
-    d.innerHTML=`<div class="rank ${rc}">${i+1}</div><div class="score-info"><div class="score-name">${c.name}${ttag}${dtag}</div><div class="score-sub">${c.gen}</div></div><div class="bar-track"><div class="bar-fill" style="width:${Math.round((c.score/maxS)*100)}%"></div></div><div class="score-num">${c.score}</div>`;
-    d.onclick=()=>openModal(c);
-    el.appendChild(d);
-  });
-}
-
-// ================================================================
-// WATCHOUTS
-// ================================================================
-function buildWatchouts(){
-  const grid=document.getElementById('wo-grid');
-  CARS.filter(c=>c.status!=='avoid').forEach(c=>{
-    const ttag=c.type==='hybrid'?'<span class="tag tag-h">H</span>':'<span class="tag tag-p">P</span>';
-    const d=document.createElement('div');
-    d.className='wo-card';
-    d.innerHTML=`<div class="wo-head">${c.name}${ttag}<span class="wo-gen-small">${c.gen}</span></div>${(c.good||[]).map(g=>`<div class="wo-row"><span class="wo-icon good">✓</span><span class="wo-text">${g}</span></div>`).join('')}<div class="wo-divider"></div>${(c.warn||[]).map(w=>`<div class="wo-row"><span class="wo-icon mid">⚠</span><span class="wo-text">${w}</span></div>`).join('')}`;
-    grid.appendChild(d);
-  });
-}
-
-// ================================================================
-// DEALER GUIDE
-// ================================================================
-function buildDealer(){
-  const grid=document.getElementById('dealer-grid');
-  CARS.filter(c=>c.status==='good-deal'||c.status==='avoid').forEach(c=>{
-    const isG=c.status==='good-deal';
-    const ttag=c.type==='hybrid'?'<span class="tag tag-h">H</span>':'<span class="tag tag-p">P</span>';
-    const d=document.createElement('div');
-    d.className='d-card '+(isG?'d-good':'d-avoid');
-    d.innerHTML=`<div class="d-name">${c.name}${ttag}</div><div class="d-badge ${isG?'good':'avoid'}">${isG?'★ Good deal if found cheap':'⚠ Approach with caution'}</div><div class="d-price">${c.gen} &middot; ${c.price}</div><div class="d-text">${c.warn[0]}</div>`;
-    d.onclick=()=>openModal(c);
-    grid.appendChild(d);
-  });
-}
-
-// ================================================================
-// INIT
-// ================================================================
-renderTable();
-buildWeights();
-renderScores();
-buildWatchouts();
-buildDealer();
+// WEIGHTS
+const W={reliability:{label:'Reliability & longevity',v:25},cost:{label:'Running cost',v:25},safety:{label:'Safety & tech',v:20},practicality:{label:'Practicality',v:15},price:{label:'Upfront price',v:15}};
+let activeF='all',scoreFilt='all',sortCol='',sortDir=1;
+function showTab(id,el){document.querySelectorAll('.sec').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');}
+function setF(f,el){activeF=f;document.querySelectorAll('.fbar .fbtn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTable();}
+function setSF(f,el){scoreFilt=f;document.querySelectorAll('#sfilters .fbtn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderScores();}
+function filtered(){return CARS.filter(c=>{if(activeF==='shortlist')return c.status==='shortlist';if(activeF==='hybrid')return c.type==='hybrid'&&c.status!=='avoid';if(activeF==='petrol')return c.type==='petrol'&&c.status!=='avoid';if(activeF==='diesel')return c.type==='diesel'&&c.status!=='avoid';if(activeF==='crossover')return(c.size==='crossover'||c.size==='suv')&&c.status!=='avoid';if(activeF==='supermini')return c.size==='supermini'&&c.status!=='avoid';if(activeF==='sub8')return c.sub8;return true;});}
+function sortBy(col){if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}renderTable();}
+function ftag(c){if(c.type==='hybrid')return'<span class="tag th">H</span>';if(c.type==='diesel')return'<span class="tag td">D</span>';return c.status==='avoid'?'<span class="tag tx">!</span>':'<span class="tag tp">P</span>';}
+function renderTable(){const tbody=document.getElementById('ctbody');tbody.innerHTML='';let cars=[...filtered()];if(sortCol){cars.sort((a,b)=>{let av=sortCol==='mpgLo'?a.mpgLo:(a[sortCol]??'');let bv=sortCol==='mpgLo'?b.mpgLo:(b[sortCol]??'');if(typeof av==='number')return(av-bv)*sortDir;return String(av).localeCompare(String(bv))*sortDir;});}const labels={shortlist:'Recommended shortlist','good-deal':'Usually over budget — good deal if found cheap',caution:'Approach with caution — verify specific issues',avoid:'Avoid — fundamental problems for your requirements'};let lastStatus='';cars.forEach(c=>{if(c.status!==lastStatus){const sep=document.createElement('tr');sep.className='shdr';sep.innerHTML=`<td colspan="11">${labels[c.status]||c.status}</td>`;tbody.appendChild(sep);lastStatus=c.status;}const tr=document.createElement('tr');const stars='★'.repeat(c.rel)+'☆'.repeat(5-c.rel);const rc=c.rel>=4?'good':c.rel===3?'mid':'bad';tr.innerHTML=`<td><span class="cname">${c.name}${ftag(c)}</span><span class="cgen">${c.gen}</span></td><td class="muted" style="font-size:11px">${c.size}</td><td style="font-size:11px">${c.type}</td><td class="good">${c.mpgLo}–${c.mpgHi}</td><td>${c.ins}</td><td class="stars ${rc}">${stars}</td><td style="font-size:11px;white-space:nowrap">${c.ncap}</td><td>${c.aeb?'<span class="good">Yes</span>':'<span class="bad">No</span>'}</td><td style="font-size:11px;color:var(--text-2)">${c.cam}</td><td>${c.boot}L</td><td>${c.sub8?'<span class="good">Yes</span>':'<span class="muted">—</span>'}</td>`;tr.onclick=()=>openModal(c);tbody.appendChild(tr);});}
+function openModal(c){const inner=document.getElementById('modal');const stag=c.status==='good-deal'?'<span class="tag tdeal">Deal?</span>':c.status==='caution'?'<span class="tag tcaution">Caution</span>':c.status==='avoid'?'<span class="tag tx">Avoid</span>':'';const stars='★'.repeat(c.rel)+'☆'.repeat(5-c.rel);inner.innerHTML=`<div class="mhdr"><div><div class="mtitle">${c.name} ${ftag(c)} ${stag}</div><div class="msub">${c.gen} &middot; ${c.size} &middot; ${c.price}</div></div><button class="mclose" onclick="closeModal()">Close</button></div><div class="mgrid"><div><span class="mflbl">Real MPG</span><span class="mfval good">${c.mpgLo}–${c.mpgHi}</span></div><div><span class="mflbl">Insurance</span><span class="mfval">Grp ${c.ins}</span></div><div><span class="mflbl">Boot</span><span class="mfval">${c.boot}L</span></div><div><span class="mflbl">ISOFIX</span><span class="mfval">${c.isofix} pts</span></div><div><span class="mflbl">Rev. camera</span><span class="mfval" style="font-size:12px">${c.cam}</span></div><div><span class="mflbl">AEB</span><span class="mfval ${c.aeb?'good':'bad'}">${c.aeb?'Standard':'Not std'}</span></div><div><span class="mflbl">NCAP</span><span class="mfval" style="font-size:12px">${c.ncap}</span></div><div><span class="mflbl">Reliability</span><span class="mfval stars">${stars}</span></div><div><span class="mflbl">Gearbox</span><span class="mfval" style="font-size:11px">${c.auto}</span></div><div><span class="mflbl">Depreciation</span><span class="mfval" style="font-size:11px">${c.dep}</span></div><div><span class="mflbl">Motorway NVH</span><span class="mfval" style="font-size:11px">${c.nhv}</span></div><div><span class="mflbl">Smartphone</span><span class="mfval" style="font-size:11px">${c.smartphone}</span></div></div><div class="ilbl">Green flags</div><div style="margin-bottom:10px">${(c.good||[]).map(g=>`<div class="wor"><span class="woi good">✓</span><span class="wot">${g}</span></div>`).join('')}</div><div class="ilbl">Watch-outs</div><div class="ibox">${(c.warn||[]).map(w=>`<div style="margin-bottom:4px">⚠ ${w}</div>`).join('')}</div>`;document.getElementById('overlay').classList.add('open');}
+function closeModal(){document.getElementById('overlay').classList.remove('open');}function closeOut(e){if(e.target===document.getElementById('overlay'))closeModal();}
+function buildWeights(){const c=document.getElementById('wcontrols');c.innerHTML='';Object.entries(W).forEach(([k,w])=>{const d=document.createElement('div');d.className='wr';d.innerHTML=`<div class="wl"><span class="wn">${w.label}</span><span class="wv" id="wv-${k}">${w.v}%</span></div><input type="range" min="0" max="50" step="5" value="${w.v}" oninput="updW('${k}',this.value)">`;c.appendChild(d);});updMeta();}
+function updW(k,v){W[k].v=parseInt(v);document.getElementById('wv-'+k).textContent=v+'%';updMeta();renderScores();}
+function updMeta(){const total=Object.values(W).reduce((s,w)=>s+w.v,0);const el=document.getElementById('tlbl');el.textContent='Weights sum to '+total+'%'+(total===100?' — balanced.':' — adjust to reach 100% for clean scores.');el.className='tlbl'+(total===100?' ok':'');}
+function calcScore(c){const total=Object.values(W).reduce((s,w)=>s+w.v,0);if(!total)return 0;let s=0;Object.entries(W).forEach(([k,w])=>{s+=(c.scores[k]/5)*w.v;});return Math.round((s/total)*100);}
+function renderScores(){let pool=CARS.filter(c=>c.status!=='avoid');if(scoreFilt==='shortlist')pool=pool.filter(c=>c.status==='shortlist');if(scoreFilt==='hybrid')pool=pool.filter(c=>c.type==='hybrid');if(scoreFilt==='diesel')pool=pool.filter(c=>c.type==='diesel');const scored=pool.map(c=>({...c,score:calcScore(c)})).sort((a,b)=>b.score-a.score);const maxS=scored[0]?.score||1;const el=document.getElementById('slist');el.innerHTML='';scored.forEach((c,i)=>{const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rn';const dtag=c.status==='good-deal'?'<span class="tag tdeal" style="font-size:9px">deal?</span>':c.status==='caution'?'<span class="tag tcaution" style="font-size:9px">caution</span>':'';const d=document.createElement('div');d.className='srow';d.innerHTML=`<div class="rank ${rc}">${i+1}</div><div class="sinfo"><div class="sname">${c.name}${ftag(c)}${dtag}</div><div class="ssub">${c.gen}</div></div><div class="btrack"><div class="bfill" style="width:${Math.round((c.score/maxS)*100)}%"></div></div><div class="snum">${c.score}</div>`;d.onclick=()=>openModal(c);el.appendChild(d);});}
+function buildWatchouts(){const grid=document.getElementById('wogrid');CARS.filter(c=>c.status!=='avoid').forEach(c=>{const d=document.createElement('div');d.className='wocard';d.innerHTML=`<div class="wohead">${c.name}${ftag(c)}<span class="wogen">${c.gen}</span></div>${(c.good||[]).map(g=>`<div class="wor"><span class="woi good">✓</span><span class="wot">${g}</span></div>`).join('')}<div class="wodiv"></div>${(c.warn||[]).map(w=>`<div class="wor"><span class="woi mid">⚠</span><span class="wot">${w}</span></div>`).join('')}`;grid.appendChild(d);});}
+function buildDealer(){const grid=document.getElementById('dgrid');CARS.filter(c=>c.status!=='shortlist').forEach(c=>{const isG=c.status==='good-deal';const isCaution=c.status==='caution';const cls=isG?'d-good':isCaution?'d-caution':'d-avoid';const bCls=isG?'good':isCaution?'caution':'avoid';const bTxt=isG?'★ Good deal if cheap':isCaution?'⚠ Approach with caution':'✕ Avoid';const d=document.createElement('div');d.className=`dcard ${cls}`;d.innerHTML=`<div class="dname">${c.name}${ftag(c)}</div><div class="dbadge ${bCls}">${bTxt}</div><div class="dprice">${c.gen} &middot; ${c.price}</div><div class="dtext">${c.warn[0]}</div>`;d.onclick=()=>openModal(c);grid.appendChild(d);});}
+renderTable();buildWeights();renderScores();buildWatchouts();buildDealer();
 </script>
 </body>
 </html>
